@@ -9,6 +9,7 @@
     </x-burd::page-header>
 
     <x-burd::card title="What it does">
+        <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
         <p>{{ $product['description'] }}</p>
     </x-burd::card>
 
@@ -26,7 +27,9 @@
             @foreach ($product['plans'] as $plan)
                 <div>
                     <x-burd::badge tone="lion">{{ $plan['name'] }}</x-burd::badge>
-                    @if ($plan['price'])
+                    @if (! $plan['stripe_required'])
+                        <p class="site-price">Free</p>
+                    @elseif ($plan['price'])
                         <p class="site-price">{{ $plan['price'] }} {{ $plan['currency'] }} <small>per {{ $plan['billing_period'] }}</small></p>
                     @else
                         <p>Pricing is not yet published and this site is not currently presenting an offer for purchase.</p>

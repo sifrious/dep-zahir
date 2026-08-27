@@ -111,3 +111,5 @@ PAYS WHEN: Customers and integrators need one accurate reference for how a produ
 CHARGES WHEN: Detailed product documentation outgrows configuration-backed content or begins duplicating runtime state owned by the product.
 
 TRIGGER: Logres has a planned end-to-end MVP workflow that must be visible without implying the execution service is already available.
+
+The registry now publishes Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard as in-development product families. Each family has a Free capability list and a future Paid capability list. Free plans bypass Stripe Price requirements; Paid plans remain unpurchasable and block the readiness check until their public prices and Stripe Price IDs are configured.

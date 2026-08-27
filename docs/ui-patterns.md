@@ -9,7 +9,7 @@ Each configured product can expose a public behavior reference from its product 
 - Availability and documentation status
 - Required inputs and resulting outputs
 - Ordered request-to-result workflow
-- Caller interactions and interchangeable execution agents
+- Caller interactions and product integrations
 - Product, account, payment, identity, and execution-target data boundaries
 - Current limitations and unresolved implementation decisions
 
@@ -30,6 +30,7 @@ The pricing catalog presents every configured product followed by its plans. It 
 | State | Presentation | Behavior |
 |---|---|---|
 | Published price | Amount, ISO currency code, and billing interval | Links to product and billing details |
+| Free tier | `Free` plus included capability bullets | No payment method or Stripe Price ID required |
 | Missing price | Neutral `Price pending publication` badge | No purchase action is rendered |
 | Additional product | New labeled section and plan-card grid | Appears automatically from `config/products.php` |
 

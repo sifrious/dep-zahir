@@ -12,7 +12,8 @@
 
     <section class="site-grid" aria-label="Products">
         @foreach ($products as $slug => $product)
-            <x-burd::card :title="$product['name']" eyebrow="Hosted product">
+            <x-burd::card :title="$product['name']" eyebrow="Product family">
+                <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
                 <p>{{ $product['summary'] }}</p>
                 <div class="site-actions">
                     <x-burd::button size="sm" :href="route('products.show', $slug)">Explore {{ $product['name'] }}</x-burd::button>

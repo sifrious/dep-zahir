@@ -12,10 +12,13 @@
                     <x-burd::button size="sm" variant="ghost" :href="route('products.show', $slug)">Product details</x-burd::button>
                 </x-slot:actions>
             </x-burd::page-header>
+            <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
             <div class="site-grid">
                 @foreach ($product['plans'] as $plan)
                     <x-burd::card :title="$product['name'].' · '.$plan['name']" :level="3">
-                        @if ($plan['price'])
+                        @if (! $plan['stripe_required'])
+                            <p class="site-price">Free</p>
+                        @elseif ($plan['price'])
                             <p class="site-price">{{ $plan['price'] }} {{ $plan['currency'] }} <small>per {{ $plan['billing_period'] }}</small></p>
                         @else
                             <x-burd::badge>Price pending publication</x-burd::badge>
@@ -25,7 +28,11 @@
                                 <li>{{ $feature }}</li>
                             @endforeach
                         </ul>
-                        <p><small>Taxes, if applicable, are calculated during Stripe Checkout.</small></p>
+                        @if ($plan['stripe_required'])
+                            <p><small>Taxes, if applicable, are calculated during Stripe Checkout.</small></p>
+                        @else
+                            <p><small>No payment method is required for the free tier.</small></p>
+                        @endif
                     </x-burd::card>
                 @endforeach
             </div>

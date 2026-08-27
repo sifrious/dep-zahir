@@ -5,8 +5,8 @@ Accounts uses Stripe-hosted Checkout and Billing Portal sessions. Stripe owns pa
 ## Local test configuration
 
 1. Create or select a Stripe test-mode account.
-2. Create a Logres product with a recurring Price in Stripe.
-3. Copy the test secret key and recurring Price ID.
+2. Create a Stripe Product and recurring Price for each paid tier you intend to offer.
+3. Copy the test secret key and recurring Price IDs.
 4. Install and authenticate the Stripe CLI.
 5. Forward Stripe events to Accounts:
 
@@ -19,8 +19,10 @@ stripe listen --forward-to http://127.0.0.1:8000/api/stripe/webhooks
 ```dotenv
 STRIPE_SECRET=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_LOGRES_PRICE_ID=price_...
+STRIPE_LOGRES_PAID_PRICE_ID=price_...
 ```
+
+Use the corresponding `STRIPE_<PRODUCT>_PAID_PRICE_ID` variable listed in `.env.example` for every other product. Free tiers do not use Stripe Checkout and do not require Stripe Price IDs.
 
 7. Clear cached configuration and run Accounts:
 

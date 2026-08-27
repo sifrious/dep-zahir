@@ -25,7 +25,10 @@ final readonly class StripeWebsiteReadiness
                 $label = "{$product['name']} {$plan['name']}";
                 $requirements["{$label} displayed price"] = $plan['price'];
                 $requirements["{$label} purchase currency"] = $plan['currency'];
-                $requirements["{$label} Stripe Price ID"] = $plan['stripe_price_id'];
+
+                if ($plan['stripe_required']) {
+                    $requirements["{$label} Stripe Price ID"] = $plan['stripe_price_id'];
+                }
             }
         }
 

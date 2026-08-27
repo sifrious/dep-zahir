@@ -20,6 +20,7 @@ Products consume Accounts through authenticated service contracts. They do not c
 - Stripe Checkout and Billing Portal session services behind the pending authenticated application boundary.
 - Central product configuration feeding product, pricing, billing, Stripe-readiness, and policy surfaces.
 - Public, status-labeled product behavior references generated from the central product registry.
+- In-development Free and Paid capability tiers for Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard.
 - Official Burd Design Blade components and self-hosted visual assets.
 
 The external identity provider and service-authentication protocol remain manual launch decisions. No public account-resolution or entitlement endpoint is exposed until those decisions are accepted.
@@ -28,7 +29,7 @@ Stripe configuration is documented in [docs/stripe.md](docs/stripe.md). The only
 
 The root URL is the public product and business site used for Stripe review. Run `php artisan accounts:stripe-readiness` before submitting its production URL to Stripe. See [docs/stripe-website-readiness.md](docs/stripe-website-readiness.md).
 
-Pricing is published at `/pricing`, shared billing information at `/billing`, and product behavior at `/products/{product}/docs`. The product catalog and its documentation are maintained in `config/products.php`. See [docs/commerce.md](docs/commerce.md).
+Pricing is published at `/pricing`, shared billing information at `/billing`, and product behavior at `/products/{product}/docs`. Free tiers require no Stripe Price; Paid tiers remain unavailable until their actual prices and Stripe Price IDs are configured. The product catalog and its documentation are maintained in `config/products.php`. See [docs/commerce.md](docs/commerce.md).
 
 ## Development
 

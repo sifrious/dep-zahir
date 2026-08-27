@@ -27,7 +27,9 @@
                     <x-burd::record-list-item :href="route('products.show', $slug)">
                         {{ $product['name'] }} · {{ $plan['name'] }}
                         <x-slot:meta>
-                            @if ($plan['price'])
+                            @if (! $plan['stripe_required'])
+                                Free
+                            @elseif ($plan['price'])
                                 {{ $plan['price'] }} {{ $plan['currency'] }} / {{ $plan['billing_period'] }}
                             @else
                                 Price pending

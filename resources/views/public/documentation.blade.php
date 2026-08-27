@@ -15,8 +15,12 @@
             <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
             <p>{{ $product['documentation']['status'] }}</p>
         </x-burd::card>
-        <x-burd::card title="Billing entitlement" variant="inset">
-            <p><code>{{ collect($product['plans'])->first()['entitlement'] }}</code></p>
+        <x-burd::card title="Plan entitlements" variant="inset">
+            <ul>
+                @foreach ($product['plans'] as $plan)
+                    <li>{{ $plan['name'] }}: <code>{{ $plan['entitlement'] }}</code></li>
+                @endforeach
+            </ul>
             <p>Accounts is the authority for whether an account may use this product.</p>
         </x-burd::card>
     </section>
@@ -65,11 +69,10 @@
                 @endforeach
             </ul>
         </x-burd::card>
-        <x-burd::card title="Execution agents">
-            <p>Agents are interchangeable through a shared execution-agent contract.</p>
+        <x-burd::card title="Integrations">
             <ul>
-                @foreach ($product['documentation']['agents'] as $agent)
-                    <li>{{ $agent }}</li>
+                @foreach ($product['documentation']['integrations'] as $integration)
+                    <li>{{ $integration }}</li>
                 @endforeach
             </ul>
         </x-burd::card>

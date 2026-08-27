@@ -8,20 +8,20 @@ Add one top-level product entry with:
 
 - stable product key;
 - public name, availability, summary, description, and digital-delivery statement;
-- documentation status, purpose, audiences, inputs, workflow, outputs, interactions, supported agents, data boundaries, and current limits;
-- one or more named plans;
+- documentation status, purpose, audiences, inputs, workflow, outputs, interactions, integrations, data boundaries, and current limits;
+- explicit Free and Paid plans with bullet-point capabilities;
 - displayed price, full currency code, and billing interval;
 - Stripe Price ID;
 - entitlement granted by that plan;
 - concrete included capabilities.
 
-Every plan appears automatically on the pricing and billing pages. Every documented product receives a public `/products/{product}/docs` behavior reference. The Stripe readiness command checks every configured plan, so an incomplete new product blocks a ready result instead of silently disappearing from the public disclosures.
+Every plan appears automatically on the pricing and billing pages. Every documented product receives a public `/products/{product}/docs` behavior reference. Free plans display `$0`, require no payment method, and do not require a Stripe Price ID. Every Paid plan blocks Stripe readiness until its displayed price, currency, billing interval, and Stripe Price ID are configured.
 
 Documentation describes shipped behavior only when the product is available. Planned contracts must use an explicit availability and documentation status and must name unfinished decisions or limits. Product-domain documentation remains in the registry; Accounts publishes it but does not own the product's runtime records.
 
 ## Current storage decision
 
-The first product catalog remains configuration-backed. A plan database and administration UI would add state, migrations, authorization, and publishing workflows before a second product needs runtime price management.
+The first product catalog remains configuration-backed. It currently documents Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard. A plan database and administration UI would add state, migrations, authorization, and publishing workflows before runtime price management is required.
 
 Revisit this decision when a second product needs plan changes without a deployment, localized prices, grandfathered plans, or scheduled price publication.
 

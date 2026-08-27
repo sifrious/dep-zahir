@@ -17,10 +17,12 @@ BUSINESS_NAME=
 BUSINESS_SUPPORT_EMAIL=
 BUSINESS_SUPPORT_PHONE=
 BUSINESS_ADDRESS=
-BUSINESS_LOGRES_PRICE=
-BUSINESS_LOGRES_CURRENCY=USD
-BUSINESS_LOGRES_BILLING_PERIOD=month
+BUSINESS_LOGRES_PAID_PRICE=
+BUSINESS_LOGRES_PAID_CURRENCY=USD
+BUSINESS_LOGRES_PAID_BILLING_PERIOD=month
 ```
+
+Every product uses the `BUSINESS_<PRODUCT>_PAID_PRICE`, `BUSINESS_<PRODUCT>_PAID_CURRENCY`, `BUSINESS_<PRODUCT>_PAID_BILLING_PERIOD`, and `STRIPE_<PRODUCT>_PAID_PRICE_ID` pattern shown in `.env.example`. Free tiers are displayed as free, require no payment method, and are excluded from Stripe Price-ID readiness checks. Every paid tier blocks readiness until its real public price and Stripe Price ID are configured.
 
 The displayed business name and product descriptions must match the business profile submitted to Stripe. Publish at least two discoverable customer-service methods. Display the full purchase currency, not only a currency symbol.
 

@@ -19,6 +19,9 @@
     "Accounts is the public business and product website submitted for Stripe review.",
     "Every configured product feeds the shared pricing, billing, and Stripe-readiness surfaces.",
     "Every documented product receives a public behavior reference generated from the central product registry.",
+    "Accounts publishes product families for Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard.",
+    "Every current product family has an in-development Free tier and Paid tier with separate capability lists.",
+    "Free tiers do not require Stripe Price IDs; every Paid tier blocks Stripe readiness until its price and Stripe Price ID are configured.",
     "Accounts consumes Official Burd Design v0.1.0 locally for its public interface."
   ],
   "assumptions": [
@@ -79,6 +82,7 @@
     {"name": "Stripe checkout and billing portal", "stage": "MVP"},
     {"name": "Stripe-derived entitlements", "stage": "MVP"},
     {"name": "Public product behavior references", "stage": "MVP"},
+    {"name": "Free and Paid package product tiers", "stage": "MVP"},
     {"name": "Organizations and memberships", "stage": "Later-multi-user"},
     {"name": "NativePHP authentication", "stage": "Later-native"}
   ],
