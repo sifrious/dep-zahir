@@ -62,6 +62,8 @@ CHARGES WHEN: Sensitive operational evidence is confused with public compliance 
 
 TRIGGER: Accounts is designated as the public home for legal and compliance information.
 
+The unused Laravel welcome specimen is removed so the public product cannot expose framework branding instead of the Accounts trust surface.
+
 ## Reusable Accounts client — 2026-08-27
 
 SEAM: Places login integration and authenticated Accounts API calls in a shared application package.

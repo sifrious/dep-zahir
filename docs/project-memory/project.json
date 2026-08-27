@@ -2,6 +2,7 @@
   "project": {
     "working_name": "Accounts",
     "repository": "/Users/mme/Projects/accounts",
+    "client_repository": "/Users/mme/Projects/Packages/AccountsClient",
     "priority": "release-blocking",
     "first_consumer": "Logres"
   },
