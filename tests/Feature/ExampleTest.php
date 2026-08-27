@@ -75,6 +75,22 @@ class ExampleTest extends TestCase
         }
     }
 
+    public function test_burdgeon_explains_its_name_on_public_product_pages(): void
+    {
+        foreach (['/products/burdgeon', '/products/burdgeon/docs'] as $path) {
+            $this->get($path)
+                ->assertOk()
+                ->assertSee('<strong>B</strong>usiness', false)
+                ->assertSee('<strong>U</strong>nderstanding', false)
+                ->assertSee('<strong>R</strong>elationship', false)
+                ->assertSee('<strong>D</strong>iagram', false)
+                ->assertSee('<strong>G</strong>eneration', false)
+                ->assertSee('<strong>E</strong>ngine', false)
+                ->assertSee('<strong>O</strong>rganizational', false)
+                ->assertSee('<strong>N</strong>avigation', false);
+        }
+    }
+
     public function test_logres_documentation_distinguishes_planned_behavior_and_boundaries(): void
     {
         $this->get('/products/logres/docs')

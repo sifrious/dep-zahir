@@ -38,12 +38,14 @@ $product = static function (
     string $paidDelivery,
     array $documentation,
     array $plans,
+    ?array $nameExpansion = null,
 ): array {
     return [
         'name' => $name,
         'availability' => 'In development',
         'summary' => $summary,
         'description' => $description,
+        'name_expansion' => $nameExpansion,
         'delivery' => "The free tier {$freeDelivery} The paid tier {$paidDelivery}",
         'documentation' => [
             'status' => 'Free and paid tiers in development',
@@ -161,6 +163,16 @@ return [
             ['Personal project workspace', 'Local history inspection and cited answers', 'Manual review of agent work and artifacts'],
             ['Hosted project synchronization and background supervision', 'Shared projects, collaboration, and retained activity', 'Managed integrations, notifications, and support'],
         ),
+        [
+            ['initial' => 'B', 'remainder' => 'usiness'],
+            ['initial' => 'U', 'remainder' => 'nderstanding'],
+            ['initial' => 'R', 'remainder' => 'elationship'],
+            ['initial' => 'D', 'remainder' => 'iagram'],
+            ['initial' => 'G', 'remainder' => 'eneration'],
+            ['initial' => 'E', 'remainder' => 'ngine'],
+            ['initial' => 'O', 'remainder' => 'rganizational'],
+            ['initial' => 'N', 'remainder' => 'avigation'],
+        ],
     ),
     'funes' => $product(
         'Funes',

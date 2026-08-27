@@ -10,6 +10,13 @@
 
     <x-burd::card title="What it does">
         <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
+        @if ($product['name_expansion'])
+            <p>
+                @foreach ($product['name_expansion'] as $word)
+                    <strong>{{ $word['initial'] }}</strong>{{ $word['remainder'] }}{{ $loop->last ? '.' : ' ' }}
+                @endforeach
+            </p>
+        @endif
         <p>{{ $product['description'] }}</p>
     </x-burd::card>
 

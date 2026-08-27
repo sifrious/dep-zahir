@@ -20,6 +20,7 @@
     "Every configured product feeds the shared pricing, billing, and Stripe-readiness surfaces.",
     "Every documented product receives a public behavior reference generated from the central product registry.",
     "Accounts publishes product families for Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard.",
+    "Burdgeon expands to Business Understanding and Relationship Diagram Generation Engine for Organizational Navigation.",
     "Every current product family has an in-development Free tier and Paid tier with separate capability lists.",
     "Free tiers do not require Stripe Price IDs; every Paid tier blocks Stripe readiness until its price and Stripe Price ID are configured.",
     "Accounts consumes the tagged Official Burd Design package from https://github.com/sifrious/official-burd-design for its public interface."

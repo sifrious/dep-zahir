@@ -10,6 +10,16 @@
         </x-slot:actions>
     </x-burd::page-header>
 
+    @if ($product['name_expansion'])
+        <x-burd::card :title="'Why '.$product['name']">
+            <p>
+                @foreach ($product['name_expansion'] as $word)
+                    <strong>{{ $word['initial'] }}</strong>{{ $word['remainder'] }}{{ $loop->last ? '.' : ' ' }}
+                @endforeach
+            </p>
+        </x-burd::card>
+    @endif
+
     <section class="site-grid" aria-label="Documentation status">
         <x-burd::card title="Availability" variant="inset">
             <x-burd::badge>{{ $product['availability'] }}</x-burd::badge>
