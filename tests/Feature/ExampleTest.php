@@ -13,6 +13,9 @@ class ExampleTest extends TestCase
             ->assertJson([
                 'service' => 'accounts',
                 'status' => 'ready_for_identity_provider',
+                'integrations' => [
+                    'stripe' => ['configured' => false],
+                ],
             ]);
     }
 }

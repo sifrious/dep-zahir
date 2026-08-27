@@ -73,3 +73,15 @@ PAYS WHEN: Logres and later applications integrate consistently without embeddin
 CHARGES WHEN: Product behavior or provider objects leak into the shared package.
 
 TRIGGER: Connected applications need one maintained integration path for Accounts.
+
+## dep: stripe/stripe-php — 2026-08-27, ACC-014
+
+SEAM: borrowed — serviced by Stripe and contributors; transitive: 1 package.
+
+PAYS WHEN: Accounts must verify Stripe webhook signatures and create Stripe Checkout and Billing Portal sessions against Stripe's current API without maintaining payment-protocol code.
+
+CHARGES WHEN: Stripe SDK major versions change their pinned API version; removal requires replacing calls confined to the Stripe adapter and webhook verifier.
+
+TRIGGER: Stripe is selected for the Accounts launch and paid commercial state must produce product entitlements.
+
+Signals: stable v21.3.0 resolved on 2026-08-27; active releases in July and August 2026; at least 100 contributors returned by GitHub; 12 open issues and 3 open pull requests observed; maintained by Stripe.

@@ -35,4 +35,18 @@ return [
         ],
     ],
 
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'active_subscription_statuses' => ['active', 'trialing'],
+        'prices' => [
+            'logres' => [
+                'price_id' => env('STRIPE_LOGRES_PRICE_ID'),
+                'product' => 'logres',
+                'product_name' => 'Logres',
+                'entitlement' => 'logres.access',
+            ],
+        ],
+    ],
+
 ];

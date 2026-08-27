@@ -16,8 +16,12 @@ Products consume Accounts through authenticated service contracts. They do not c
 - Suspended-account and inactive-product denial.
 - A public trust center with stable legal and compliance document routes.
 - A separately versioned Accounts client package for connected applications.
+- Signed, idempotent Stripe subscription webhooks mapped to product entitlements.
+- Stripe Checkout and Billing Portal session services behind the pending authenticated application boundary.
 
 The external identity provider and service-authentication protocol remain manual launch decisions. No public account-resolution or entitlement endpoint is exposed until those decisions are accepted.
+
+Stripe configuration is documented in [docs/stripe.md](docs/stripe.md). The only public Stripe route is the signature-verified webhook at `/api/stripe/webhooks`.
 
 ## Development
 
@@ -39,5 +43,6 @@ The local service root returns its readiness state. Laravel also exposes `/up` f
 - [Client package decision](docs/decisions/ADR-002-reusable-accounts-client.md)
 - [Domain glossary](docs/glossary.md)
 - [Workflows and state](docs/workflows.md)
+- [Stripe setup](docs/stripe.md)
 - [Delivery tickets](docs/tickets.md)
 - [Machine-readable project memory](docs/project-memory/project.json)

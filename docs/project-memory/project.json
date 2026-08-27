@@ -13,7 +13,9 @@
     "Products will not share direct database credentials with Accounts.",
     "Accounts is the public source of truth for approved legal and compliance documents.",
     "Applications integrate through a reusable Accounts client package.",
-    "Stripe is the selected external payment provider."
+    "Stripe is the selected external payment provider.",
+    "The official Stripe PHP SDK is installed behind the Accounts Stripe adapter.",
+    "Signed Stripe subscription events idempotently update Accounts entitlements."
   ],
   "assumptions": [
     "One external identity provider can support browser and future NativePHP clients.",

@@ -8,6 +8,13 @@ Route::get('/', function () {
         'service' => 'accounts',
         'status' => 'ready_for_identity_provider',
         'health' => url('/up'),
+        'integrations' => [
+            'stripe' => [
+                'configured' => filled(config('services.stripe.secret'))
+                    && filled(config('services.stripe.webhook_secret'))
+                    && filled(config('services.stripe.prices.logres.price_id')),
+            ],
+        ],
     ]);
 });
 
