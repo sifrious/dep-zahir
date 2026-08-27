@@ -87,3 +87,17 @@ CHARGES WHEN: Stripe SDK major versions change their pinned API version; removal
 TRIGGER: Stripe is selected for the Accounts launch and paid commercial state must produce product entitlements.
 
 Signals: stable v21.3.0 resolved on 2026-08-27; active releases in July and August 2026; at least 100 contributors returned by GitHub; 12 open issues and 3 open pull requests observed; maintained by Stripe.
+
+## dep: sifrious/official-burd-design — 2026-08-27, ACC-017
+
+SEAM: borrowed — serviced in the local Official Burd Design repository; transitive: 0 new packages because its Illuminate requirements are already supplied by Laravel.
+
+PAYS WHEN: Accounts pricing, billing, product, and policy pages need the same production Blade components and visual tokens as Logres without copying the design system.
+
+CHARGES WHEN: A breaking component or stylesheet release requires updating the Accounts views; removal requires replacing the Burd component tags and stylesheet import across the public view family.
+
+TRIGGER: Accounts now has multiple related public commerce surfaces and the standalone production design package is available.
+
+Signals: release boundary commit `645da43` dated 2026-08-27; one current repository contributor; maintained alongside its consuming products; no external issue tracker yet.
+
+The Vite entry compiles only the Burd-backed production stylesheet. The scaffold's Bunny font fetch and Tailwind transform are removed because Burd supplies self-hosted fonts and complete visual tokens.

@@ -1,29 +1,28 @@
 <x-layouts.public title="Products">
-    <section>
-        <p class="eyebrow">{{ $business['name'] ?: 'Business name pending publication' }}</p>
-        <h1>Software that turns plans into working systems.</h1>
-        <p>Explore our hosted products, their delivery terms, and the public policies that govern their use.</p>
+    <x-burd::page-header
+        :eyebrow="$business['name'] ?: 'Business name pending publication'"
+        title="Software that turns plans into working systems."
+        subtitle="Explore our hosted products, pricing, billing practices, and the public policies that govern their use."
+    >
+        <x-slot:actions>
+            <x-burd::button :href="route('pricing')">Review pricing</x-burd::button>
+            <x-burd::button variant="secondary" :href="route('trust.index')">Read policies</x-burd::button>
+        </x-slot:actions>
+    </x-burd::page-header>
+
+    <section class="site-grid" aria-label="Products">
+        @foreach ($products as $slug => $product)
+            <x-burd::card :title="$product['name']" eyebrow="Hosted product">
+                <p>{{ $product['summary'] }}</p>
+                <div class="site-actions">
+                    <x-burd::button size="sm" :href="route('products.show', $slug)">Explore {{ $product['name'] }}</x-burd::button>
+                    <x-burd::button size="sm" variant="ghost" :href="route('pricing')">View plans</x-burd::button>
+                </div>
+            </x-burd::card>
+        @endforeach
     </section>
 
-    <section aria-labelledby="products-heading">
-        <h2 id="products-heading">Products</h2>
-        <ul>
-            @foreach ($business['products'] as $slug => $product)
-                <li>
-                    <h3><a href="{{ route('products.show', $slug) }}">{{ $product['name'] }}</a></h3>
-                    <p>{{ $product['summary'] }}</p>
-                    @if ($product['price'])
-                        <p class="meta">{{ $product['price'] }} {{ $product['currency'] }} per {{ $product['billing_period'] }}</p>
-                    @else
-                        <p class="meta">Pricing is not yet published.</p>
-                    @endif
-                </li>
-            @endforeach
-        </ul>
-    </section>
-
-    <section aria-labelledby="support-heading">
-        <h2 id="support-heading">Customer support</h2>
+    <x-burd::card title="Customer support" eyebrow="Direct contact" variant="inset">
         @if ($business['support_email'])
             <p>Email <a href="mailto:{{ $business['support_email'] }}">{{ $business['support_email'] }}</a>.</p>
         @else
@@ -35,5 +34,5 @@
         @if ($business['address'])
             <address>{{ $business['address'] }}</address>
         @endif
-    </section>
+    </x-burd::card>
 </x-layouts.public>

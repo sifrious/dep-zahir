@@ -1,9 +1,71 @@
-@import 'tailwindcss';
+@import '../../vendor/sifrious/official-burd-design/design-system/styles.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+.site-shell {
+    width: min(72rem, calc(100% - 2rem));
+    margin-inline: auto;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    border-block-end: var(--bw-hair) solid var(--rule);
+}
+
+.site-nav__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.site-main {
+    min-block-size: 70vh;
+    padding-block: var(--space-7);
+}
+
+.site-footer {
+    padding-block: var(--space-5);
+    border-block-start: var(--bw-hair) solid var(--rule);
+    color: var(--text-muted);
+}
+
+.site-stack {
+    display: grid;
+    gap: var(--space-6);
+}
+
+.site-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-4);
+}
+
+.site-price {
+    font-family: var(--font-mono);
+    font-size: var(--t-h2);
+    color: var(--text-strong);
+}
+
+.site-price small {
+    font-family: var(--font-body);
+    font-size: var(--t-small);
+    color: var(--text-muted);
+}
+
+.site-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.site-policy {
+    max-inline-size: var(--measure);
+}
+
+.site-policy > :last-child,
+.burg-card > :last-child {
+    margin-block-end: 0;
 }

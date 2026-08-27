@@ -13,7 +13,7 @@ class TrustCenterTest extends TestCase
             ->assertSee('Privacy Policy')
             ->assertSee('Terms of Service')
             ->assertSee('Security')
-            ->assertSee('Awaiting approved publication');
+            ->assertSee('Awaiting approved content');
     }
 
     public function test_unapproved_documents_are_not_published(): void
@@ -36,5 +36,17 @@ class TrustCenterTest extends TestCase
             ->assertOk()
             ->assertSee('Version 1.0')
             ->assertSee('Approved privacy content.');
+    }
+
+    public function test_standard_policy_drafts_are_previewable_only_in_the_local_environment(): void
+    {
+        $this->get('/drafts/legal/refunds')
+            ->assertOk()
+            ->assertSee('Draft preview')
+            ->assertSee('Initial purchases');
+
+        $this->app['env'] = 'production';
+
+        $this->get('/drafts/legal/refunds')->assertNotFound();
     }
 }

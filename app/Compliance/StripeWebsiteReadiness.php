@@ -10,12 +10,24 @@ final readonly class StripeWebsiteReadiness
             'Business name' => config('business.name'),
             'Customer support email' => config('business.support_email'),
             'A second customer support method' => config('business.support_phone') ?: config('business.address'),
-            'Logres displayed price' => config('business.products.logres.price'),
-            'Logres purchase currency' => config('business.products.logres.currency'),
             'Stripe secret key' => config('services.stripe.secret'),
             'Stripe webhook signing secret' => config('services.stripe.webhook_secret'),
-            'Stripe Logres Price ID' => config('services.stripe.prices.logres.price_id'),
+            'Policy version' => config('business.policy_version'),
+            'Policy effective date' => config('business.policy_effective_at'),
+            'Initial purchase refund window' => config('business.initial_refund_days'),
+            'Renewal refund review window' => config('business.renewal_refund_days'),
+            'Cancellation effective timing' => config('business.cancellation_effective'),
+            'Digital delivery timing' => config('business.delivery_timing'),
         ];
+
+        foreach (config('products') as $product) {
+            foreach ($product['plans'] as $plan) {
+                $label = "{$product['name']} {$plan['name']}";
+                $requirements["{$label} displayed price"] = $plan['price'];
+                $requirements["{$label} purchase currency"] = $plan['currency'];
+                $requirements["{$label} Stripe Price ID"] = $plan['stripe_price_id'];
+            }
+        }
 
         foreach (['privacy', 'terms', 'refunds', 'cancellations', 'delivery'] as $document) {
             $requirements[config("trust.documents.{$document}.title")] = config("trust.documents.{$document}.published");

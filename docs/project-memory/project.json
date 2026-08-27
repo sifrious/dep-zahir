@@ -16,7 +16,9 @@
     "Stripe is the selected external payment provider.",
     "The official Stripe PHP SDK is installed behind the Accounts Stripe adapter.",
     "Signed Stripe subscription events idempotently update Accounts entitlements.",
-    "Accounts is the public business and product website submitted for Stripe review."
+    "Accounts is the public business and product website submitted for Stripe review.",
+    "Every configured product feeds the shared pricing, billing, and Stripe-readiness surfaces.",
+    "Accounts consumes Official Burd Design v0.1.0 locally for its public interface."
   ],
   "assumptions": [
     "One external identity provider can support browser and future NativePHP clients.",
@@ -38,6 +40,11 @@
       "id": "D-001",
       "decision": "Use Stripe as the external payment provider behind an Accounts adapter.",
       "rationale": "Stripe is the selected provider; keeping it behind Accounts prevents provider objects and webhook policy from leaking into products."
+    },
+    {
+      "id": "D-002",
+      "decision": "Use the configuration-backed product registry as the public pricing and billing catalog for the first product.",
+      "rationale": "One real product does not justify persisted plan administration; revisit when a second product needs runtime price management."
     }
   ],
   "open_questions": [
@@ -48,7 +55,8 @@
     "Which Stripe products and prices map to the initial Logres entitlements?",
     "Which legal and compliance documents are approved for initial publication?",
     "What business name, support contacts, business address, and Logres price should be published?",
-    "What outage grace period may Logres use for a previously observed entitlement?"
+    "What outage grace period may Logres use for a previously observed entitlement?",
+    "Where will the Official Burd Design v0.1.0 package be published for Laravel Cloud installation?"
   ],
   "constraints": [
     "No passwords, MFA secrets, raw payment instruments, or product-domain records in Accounts.",

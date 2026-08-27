@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3fab0d584d3785c96182d73e5b7928a",
+    "content-hash": "509345b8404633931cdf4bc32902b969",
     "packages": [
         {
             "name": "brick/math",
@@ -3258,6 +3258,101 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.3"
             },
             "time": "2026-06-18T03:57:49+00:00"
+        },
+        {
+            "name": "sifrious/official-burd-design",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "/Users/mme/Projects/official-burd-design",
+                "reference": "645da4391f475dcde30cdde0f66b688bc60b711d"
+            },
+            "require": {
+                "illuminate/support": "^13.0",
+                "illuminate/view": "^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sifrious\\OfficialBurdDesign\\OfficialBurdDesignServiceProvider"
+                    ]
+                },
+                "official-burd-design": {
+                    "stylesheet": "design-system/styles.css"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sifrious\\OfficialBurdDesign\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/.gitattributes",
+                    "/.github",
+                    "/.gitignore",
+                    "/.nvmrc",
+                    "/.phpunit.cache",
+                    "/AGENTS.md",
+                    "/BRIEF.md",
+                    "/DO-NOT-BUILD.md",
+                    "/OWNED-DIFF.md",
+                    "/artifacts",
+                    "/base.css",
+                    "/colors.css",
+                    "/components.css",
+                    "/composer.lock",
+                    "/docs",
+                    "/effects.css",
+                    "/node_modules",
+                    "/package-lock.json",
+                    "/package.json",
+                    "/phpunit.xml",
+                    "/playwright.config.ts",
+                    "/project-memory.json",
+                    "/scripts",
+                    "/spacing.css",
+                    "/testbench.yaml",
+                    "/tests",
+                    "/workbench",
+                    "/vendor",
+                    "/design-system/_ds",
+                    "/design-system/SKILL.md",
+                    "/design-system/components",
+                    "/design-system/explore",
+                    "/design-system/guidelines",
+                    "/design-system/readme.md",
+                    "/design-system/ui_kits",
+                    "/design-system/uploads"
+                ]
+            },
+            "scripts": {
+                "serve": [
+                    "Composer\\Config::disableProcessTimeout",
+                    "@php vendor/bin/testbench serve"
+                ],
+                "test": [
+                    "@php vendor/bin/phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Burd Blade components and their visual verification workbench.",
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
         },
         {
             "name": "stripe/stripe-php",

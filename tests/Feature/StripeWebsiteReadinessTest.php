@@ -19,10 +19,16 @@ class StripeWebsiteReadinessTest extends TestCase
         config()->set('business.name', 'Example Business');
         config()->set('business.support_email', 'support@example.test');
         config()->set('business.support_phone', '+15555550100');
-        config()->set('business.products.logres.price', '25.00');
+        config()->set('business.policy_version', '1.0');
+        config()->set('business.policy_effective_at', '2026-08-27');
+        config()->set('business.initial_refund_days', '14');
+        config()->set('business.renewal_refund_days', '7');
+        config()->set('business.cancellation_effective', 'at the end of the current paid billing period');
+        config()->set('business.delivery_timing', 'immediately after successful checkout');
+        config()->set('products.logres.plans.standard.price', '25.00');
+        config()->set('products.logres.plans.standard.stripe_price_id', 'price_example');
         config()->set('services.stripe.secret', 'sk_test_example');
         config()->set('services.stripe.webhook_secret', 'whsec_example');
-        config()->set('services.stripe.prices.logres.price_id', 'price_example');
 
         foreach (['privacy', 'terms', 'refunds', 'cancellations', 'delivery'] as $document) {
             config()->set("trust.documents.{$document}.published", true);

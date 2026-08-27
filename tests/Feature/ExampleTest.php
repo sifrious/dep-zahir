@@ -26,4 +26,18 @@ class ExampleTest extends TestCase
                 ],
             ]);
     }
+
+    public function test_pricing_and_billing_cover_the_product_catalog(): void
+    {
+        $this->get('/pricing')
+            ->assertOk()
+            ->assertSee('Logres')
+            ->assertSee('Standard')
+            ->assertSee('Price pending publication');
+
+        $this->get('/billing')
+            ->assertOk()
+            ->assertSee('Logres')
+            ->assertSee('Stripe-hosted Checkout');
+    }
 }
