@@ -9,6 +9,7 @@
   "facts": [
     "Authentication and payment processing will be external.",
     "Accounts will be a standalone service with its own repository.",
+    "The Accounts production domain and deployment repository identity are mary.is.",
     "Logres is the first product consumer.",
     "Products will not share direct database credentials with Accounts.",
     "Accounts is the public source of truth for approved legal and compliance documents.",
@@ -55,7 +56,6 @@
   "open_questions": [
     "Which external identity provider will be used for the first production login?",
     "Which identity protocol and token audience will Logres consume?",
-    "What is the production domain for Accounts?",
     "What is the production domain for Logres?",
     "Which Stripe products and prices map to the initial Logres entitlements?",
     "Which legal and compliance documents are approved for initial publication?",
