@@ -42,6 +42,18 @@ vendor/bin/pint --test
 
 The local service root returns its readiness state. Laravel also exposes `/up` for health checks.
 
+## Deployment
+
+The production application is deployed to Laravel Cloud at `https://mary.is` with PHP 8.5 and Node 24. Its build runs, in order:
+
+```bash
+composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+npm ci --audit false
+npm run build
+```
+
+The npm steps are required because `public/build` is generated during deployment and is not committed.
+
 ## Project records
 
 - [Project brief](BRIEF.md)

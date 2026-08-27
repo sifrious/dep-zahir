@@ -16,7 +16,7 @@ Accounts is live when a production identity can resolve to one stable account, S
 | ACC-008 | Select the external identity provider | Decision records protocol, browser flow, NativePHP compatibility, export path, and operating cost | Manual approval | Decision required |
 | ACC-009 | Implement the selected identity adapter | Real provider login creates or resolves a production account | ACC-008 | Pending |
 | ACC-010 | Integrate Logres | Logres signs in through Accounts and enforces `logres.access` | ACC-009, ACC-016 | Pending |
-| ACC-011 | Deploy Accounts to Laravel Cloud | Production health, database, secrets, logs, migrations, and rollback are verified | Domain and Cloud authority | Pending |
+| ACC-011 | Deploy Accounts to Laravel Cloud | Production health, database, secrets, logs, migrations, and rollback are verified | Domain and Cloud authority | Application healthy at mary.is; launch configuration pending |
 | ACC-012 | Prove the launch path | A production identity signs in and reaches the authorized Logres request screen | ACC-010, ACC-011 | Pending |
 | ACC-013 | Select Stripe as the payment provider | Stripe owns checkout, payment instruments, subscriptions, invoices, refunds, and the customer billing portal | User decision | Complete |
 | ACC-014 | Implement Stripe-derived entitlements | Signed idempotent Stripe events alter named grants without exposing payment instruments | ACC-013 | Complete |

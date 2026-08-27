@@ -10,6 +10,7 @@
     "Authentication and payment processing will be external.",
     "Accounts will be a standalone service with its own repository.",
     "The Accounts production domain and deployment repository identity are mary.is.",
+    "The mary.is Laravel Cloud environment builds with PHP 8.5 and Node 24, including Composer install, npm ci, and the Vite production build.",
     "Logres is the first product consumer.",
     "Products will not share direct database credentials with Accounts.",
     "Accounts is the public source of truth for approved legal and compliance documents.",
