@@ -1,0 +1,25 @@
+# Accounts launch tickets
+
+## Release predicate
+
+Accounts is live when a production identity can resolve to one stable account and Logres can receive an authenticated decision for `logres.access` without direct database access.
+
+| ID | Ticket | Acceptance evidence | Gate | Status |
+|---|---|---|---|---|
+| ACC-001 | Establish project genesis | Brief, owned-diff register, ADR, glossary, workflows, and project memory exist | None | Complete |
+| ACC-002 | Scaffold framework-default Laravel service | Default application boots and the default test suite passes | None | Complete |
+| ACC-003 | Persist stable accounts and external identities | One issuer/subject pair resolves idempotently to one account; conflicts are rejected | None | Complete |
+| ACC-004 | Persist products and entitlements | `logres.access` can be granted, expired, revoked, and evaluated deterministically | None | Complete |
+| ACC-005 | Define service authentication | Unauthenticated product requests are rejected and authenticated Logres requests are attributed | Identity protocol decision | Decision required |
+| ACC-006 | Expose account resolution | A verified external identity resolves through a versioned endpoint | Identity provider decision | Blocked by ACC-008 |
+| ACC-007 | Expose entitlement decisions | Logres receives allowed or denied with account, entitlement, and evaluation time | ACC-005 | Ready after ACC-005 |
+| ACC-008 | Select the external identity provider | Decision records protocol, browser flow, NativePHP compatibility, export path, and operating cost | Manual approval | Decision required |
+| ACC-009 | Implement the selected identity adapter | Real provider login creates or resolves a production account | ACC-008 | Pending |
+| ACC-010 | Integrate Logres | Logres signs in through Accounts and enforces `logres.access` | ACC-009, ACC-016 | Pending |
+| ACC-011 | Deploy Accounts to Laravel Cloud | Production health, database, secrets, logs, migrations, and rollback are verified | Domain and Cloud authority | Pending |
+| ACC-012 | Prove the launch path | A production identity signs in and reaches the authorized Logres request screen | ACC-010, ACC-011 | Pending |
+| ACC-013 | Select a payment provider | Decision records checkout, subscriptions, webhooks, refunds, export, and fees | Deferred until paid plan | Deferred |
+| ACC-014 | Implement payment-derived entitlements | Signed idempotent events alter named grants without exposing payment instruments | ACC-013 | Deferred |
+| ACC-015 | Publish the public trust center | Stable public URLs list approved legal and compliance documents with version and effective date | Approved document copy | In progress |
+| ACC-016 | Build the reusable Accounts client package | Laravel applications can initiate login and call authenticated Accounts APIs without provider-specific application code | ACC-005, ACC-008 | Scaffolded; integrations pending |
+| ACC-017 | Integrate the Burd design system | Public account and trust surfaces consume the standalone Burd package | Burd package release | Pending |

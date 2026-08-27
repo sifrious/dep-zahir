@@ -1,0 +1,73 @@
+{
+  "project": {
+    "working_name": "Accounts",
+    "repository": "/Users/mme/Projects/accounts",
+    "priority": "release-blocking",
+    "first_consumer": "Logres"
+  },
+  "facts": [
+    "Authentication and payment processing will be external.",
+    "Accounts will be a standalone service with its own repository.",
+    "Logres is the first product consumer.",
+    "Products will not share direct database credentials with Accounts.",
+    "Accounts is the public source of truth for approved legal and compliance documents.",
+    "Applications integrate through a reusable Accounts client package."
+  ],
+  "assumptions": [
+    "One external identity provider can support browser and future NativePHP clients.",
+    "The first entitlement required for launch is logres.access.",
+    "A relational database is sufficient for account and entitlement state."
+  ],
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "decision": "Use a central account service rather than a shared user database.",
+      "rationale": "Products need one stable identity without shared-schema ownership."
+    },
+    {
+      "id": "ADR-002",
+      "decision": "Use a separate Accounts client package for login integration and authenticated service calls.",
+      "rationale": "Connected applications need one provider-independent integration without duplicated security-sensitive behavior."
+    }
+  ],
+  "open_questions": [
+    "Which external identity provider will be used for the first production login?",
+    "Which identity protocol and token audience will Logres consume?",
+    "What is the production domain for Accounts?",
+    "What is the production domain for Logres?",
+    "Which external payment provider will be used when the first paid plan is accepted?",
+    "Which legal and compliance documents are approved for initial publication?",
+    "What outage grace period may Logres use for a previously observed entitlement?"
+  ],
+  "constraints": [
+    "No passwords, MFA secrets, raw payment instruments, or product-domain records in Accounts.",
+    "Provider-specific identity and payment types do not cross public service contracts.",
+    "Every state-changing provider callback is authenticated and idempotent.",
+    "The first deployment targets Laravel Cloud."
+  ],
+  "features": [
+    {"name": "Stable accounts", "stage": "MVP"},
+    {"name": "External identity links", "stage": "MVP"},
+    {"name": "Products and named entitlements", "stage": "MVP"},
+    {"name": "Account resolution API", "stage": "MVP"},
+    {"name": "Entitlement decision API", "stage": "MVP"},
+    {"name": "External identity provider adapter", "stage": "MVP-decision"},
+    {"name": "Public legal and compliance trust center", "stage": "MVP"},
+    {"name": "Reusable Accounts client package", "stage": "MVP"},
+    {"name": "Logres account projection", "stage": "MVP-integration"},
+    {"name": "Payment provider adapter", "stage": "Later-paid-plan"},
+    {"name": "Organizations and memberships", "stage": "Later-multi-user"},
+    {"name": "NativePHP authentication", "stage": "Later-native"}
+  ],
+  "content_opportunities": [
+    {
+      "format": "post",
+      "user_problem": "Multiple products need one login without sharing a database.",
+      "concept": "Authoritative account service versus shared user schema",
+      "technology": "Laravel, OIDC, external billing",
+      "project_context": "Accounts and Logres",
+      "audience": "Application architects",
+      "why_it_matters": "Single sign-on is often confused with shared database ownership."
+    }
+  ]
+}
