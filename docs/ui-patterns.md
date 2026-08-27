@@ -1,5 +1,26 @@
 # Public commerce interface patterns
 
+## Product behavior reference
+
+Each configured product can expose a public behavior reference from its product page. The reference composes Burd page headers, badges, cards, buttons, and semantic lists. It separates current availability from the documented contract so planned behavior cannot be mistaken for a live capability.
+
+### Sections
+
+- Availability and documentation status
+- Required inputs and resulting outputs
+- Ordered request-to-result workflow
+- Caller interactions and interchangeable execution agents
+- Product, account, payment, identity, and execution-target data boundaries
+- Current limitations and unresolved implementation decisions
+
+### Accessibility
+
+- One page-level heading names the product behavior reference.
+- Workflow order is represented by an ordered list rather than visual numbering alone.
+- Status and limitations are visible text and do not rely on color.
+- Section headings are supplied by Burd cards with consistent nesting.
+- Navigation actions use links because they move to other documents.
+
 ## Pricing catalog
 
 The pricing catalog presents every configured product followed by its plans. It composes Burd page headers, cards, badges, and buttons rather than introducing an Accounts-specific pricing component.

@@ -16,6 +16,9 @@
                 <p>{{ $product['summary'] }}</p>
                 <div class="site-actions">
                     <x-burd::button size="sm" :href="route('products.show', $slug)">Explore {{ $product['name'] }}</x-burd::button>
+                    @if (isset($product['documentation']))
+                        <x-burd::button size="sm" variant="secondary" :href="route('products.docs', $slug)">How it works</x-burd::button>
+                    @endif
                     <x-burd::button size="sm" variant="ghost" :href="route('pricing')">View plans</x-burd::button>
                 </div>
             </x-burd::card>

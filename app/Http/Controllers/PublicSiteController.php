@@ -22,6 +22,19 @@ class PublicSiteController extends Controller
 
         return view('public.product', [
             'business' => config('business'),
+            'productKey' => $product,
+            'product' => $definition,
+        ]);
+    }
+
+    public function documentation(string $product): View
+    {
+        $definition = config("products.{$product}");
+
+        abort_unless($definition && isset($definition['documentation']), 404);
+
+        return view('public.documentation', [
+            'productKey' => $product,
             'product' => $definition,
         ]);
     }

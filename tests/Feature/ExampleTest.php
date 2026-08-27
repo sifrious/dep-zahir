@@ -40,4 +40,42 @@ class ExampleTest extends TestCase
             ->assertSee('Logres')
             ->assertSee('Stripe-hosted Checkout');
     }
+
+    public function test_every_documented_product_has_a_public_behavior_reference(): void
+    {
+        foreach (config('products') as $slug => $product) {
+            if (! isset($product['documentation'])) {
+                continue;
+            }
+
+            $this->get(route('products.docs', $slug))
+                ->assertOk()
+                ->assertSee($product['name'].' behavior')
+                ->assertSee($product['availability'])
+                ->assertSee($product['documentation']['status']);
+        }
+    }
+
+    public function test_logres_documentation_distinguishes_planned_behavior_and_boundaries(): void
+    {
+        $this->get('/products/logres/docs')
+            ->assertOk()
+            ->assertSee('Planned MVP contract')
+            ->assertSee('ExecutionRequest')
+            ->assertSee('Translated Tasks')
+            ->assertSee('TaskPrompt')
+            ->assertSee('ExecutionTarget selection')
+            ->assertSee('Orb API dispatch')
+            ->assertSee('Caller response')
+            ->assertSee('Aggregated response')
+            ->assertSee('Codex')
+            ->assertSee('Claude')
+            ->assertSee('logres.access')
+            ->assertSee('not a currently available execution service');
+    }
+
+    public function test_unknown_product_documentation_returns_not_found(): void
+    {
+        $this->get('/products/unknown/docs')->assertNotFound();
+    }
 }

@@ -18,6 +18,7 @@
     "Signed Stripe subscription events idempotently update Accounts entitlements.",
     "Accounts is the public business and product website submitted for Stripe review.",
     "Every configured product feeds the shared pricing, billing, and Stripe-readiness surfaces.",
+    "Every documented product receives a public behavior reference generated from the central product registry.",
     "Accounts consumes Official Burd Design v0.1.0 locally for its public interface."
   ],
   "assumptions": [
@@ -77,6 +78,7 @@
     {"name": "Stripe payment adapter", "stage": "MVP"},
     {"name": "Stripe checkout and billing portal", "stage": "MVP"},
     {"name": "Stripe-derived entitlements", "stage": "MVP"},
+    {"name": "Public product behavior references", "stage": "MVP"},
     {"name": "Organizations and memberships", "stage": "Later-multi-user"},
     {"name": "NativePHP authentication", "stage": "Later-native"}
   ],
@@ -89,6 +91,15 @@
       "project_context": "Accounts and Logres",
       "audience": "Application architects",
       "why_it_matters": "Single sign-on is often confused with shared database ownership."
+    },
+    {
+      "format": "long-form video",
+      "user_problem": "A planned automation product can look finished before its execution path exists.",
+      "concept": "Publishing behavior contracts with explicit availability and implementation limits",
+      "technology": "Laravel, server-rendered Blade, configuration-backed product catalogs",
+      "project_context": "Accounts publishing the Logres MVP contract",
+      "audience": "Product engineers and technical founders",
+      "why_it_matters": "Public documentation can create trust only when it clearly separates intended behavior from shipped capability."
     }
   ]
 }

@@ -101,3 +101,13 @@ TRIGGER: Accounts now has multiple related public commerce surfaces and the stan
 Signals: release boundary commit `645da43` dated 2026-08-27; one current repository contributor; maintained alongside its consuming products; no external issue tracker yet.
 
 The Vite entry compiles only the Burd-backed production stylesheet. The scaffold's Bunny font fetch and Tailwind transform are removed because Burd supplies self-hosted fonts and complete visual tokens.
+
+## Public product behavior references — 2026-08-27
+
+SEAM: Publishes each product's purpose, inputs, workflow, outputs, interactions, ownership boundaries, billing entitlement, availability, and current limits from the central product registry.
+
+PAYS WHEN: Customers and integrators need one accurate reference for how a product behaves without reconstructing its contract from marketing copy or implementation repositories.
+
+CHARGES WHEN: Detailed product documentation outgrows configuration-backed content or begins duplicating runtime state owned by the product.
+
+TRIGGER: Logres has a planned end-to-end MVP workflow that must be visible without implying the execution service is already available.

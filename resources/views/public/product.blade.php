@@ -1,6 +1,9 @@
 <x-layouts.public :title="$product['name']">
     <x-burd::page-header eyebrow="Product" :title="$product['name']" :subtitle="$product['summary']">
         <x-slot:actions>
+            @if (isset($product['documentation']))
+                <x-burd::button variant="secondary" :href="route('products.docs', $productKey)">How it works</x-burd::button>
+            @endif
             <x-burd::button :href="route('pricing')">Review plans</x-burd::button>
         </x-slot:actions>
     </x-burd::page-header>
