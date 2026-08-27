@@ -12,7 +12,8 @@
     "Logres is the first product consumer.",
     "Products will not share direct database credentials with Accounts.",
     "Accounts is the public source of truth for approved legal and compliance documents.",
-    "Applications integrate through a reusable Accounts client package."
+    "Applications integrate through a reusable Accounts client package.",
+    "Stripe is the selected external payment provider."
   ],
   "assumptions": [
     "One external identity provider can support browser and future NativePHP clients.",
@@ -29,6 +30,11 @@
       "id": "ADR-002",
       "decision": "Use a separate Accounts client package for login integration and authenticated service calls.",
       "rationale": "Connected applications need one provider-independent integration without duplicated security-sensitive behavior."
+    },
+    {
+      "id": "D-001",
+      "decision": "Use Stripe as the external payment provider behind an Accounts adapter.",
+      "rationale": "Stripe is the selected provider; keeping it behind Accounts prevents provider objects and webhook policy from leaking into products."
     }
   ],
   "open_questions": [
@@ -36,7 +42,7 @@
     "Which identity protocol and token audience will Logres consume?",
     "What is the production domain for Accounts?",
     "What is the production domain for Logres?",
-    "Which external payment provider will be used when the first paid plan is accepted?",
+    "Which Stripe products and prices map to the initial Logres entitlements?",
     "Which legal and compliance documents are approved for initial publication?",
     "What outage grace period may Logres use for a previously observed entitlement?"
   ],
@@ -56,7 +62,9 @@
     {"name": "Public legal and compliance trust center", "stage": "MVP"},
     {"name": "Reusable Accounts client package", "stage": "MVP"},
     {"name": "Logres account projection", "stage": "MVP-integration"},
-    {"name": "Payment provider adapter", "stage": "Later-paid-plan"},
+    {"name": "Stripe payment adapter", "stage": "MVP"},
+    {"name": "Stripe checkout and billing portal", "stage": "MVP"},
+    {"name": "Stripe-derived entitlements", "stage": "MVP"},
     {"name": "Organizations and memberships", "stage": "Later-multi-user"},
     {"name": "NativePHP authentication", "stage": "Later-native"}
   ],

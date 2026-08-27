@@ -15,13 +15,13 @@ People using Logres and future products need one account, one sign-in identity, 
 
 ## Owned-diff budget
 
-The project starts from the current Laravel scaffold. Genesis authorizes only the smallest account-service capability: stable accounts, external identity links, products, entitlements, service-facing resolution and authorization endpoints, and the persistence required by those behaviors. External identity and payment providers must enter through provider-specific adapters only after their contracts are selected. Every other framework deviation requires an `OWNED-DIFF.md` entry with an observed trigger.
+The project starts from the current Laravel scaffold. Genesis authorizes only the smallest account-service capability: stable accounts, external identity links, products, entitlements, service-facing resolution and authorization endpoints, and the persistence required by those behaviors. External identity providers and Stripe enter through provider-specific adapters. Every other framework deviation requires an `OWNED-DIFF.md` entry with an observed trigger.
 
 Accounts is also the public source of truth for approved legal and compliance documents. Connected applications use a reusable Accounts client package for login integration and authenticated service requests instead of embedding provider-specific behavior.
 
 ## First measurable milestone
 
-By 2026-09-03, a person can authenticate through the selected external identity provider, Accounts resolves or creates one stable account, Logres can ask whether that account has `logres.access`, and the response is exercised end to end against the production deployment without either application sharing database credentials.
+By 2026-09-03, a person can authenticate through the selected external identity provider, Accounts resolves or creates one stable account, Stripe can establish the account's paid access through authenticated webhook state, Logres can ask whether that account has `logres.access`, and the response is exercised end to end against the production deployment without either application sharing database credentials.
 
 ## Kill criteria
 

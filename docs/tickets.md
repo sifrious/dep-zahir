@@ -2,7 +2,7 @@
 
 ## Release predicate
 
-Accounts is live when a production identity can resolve to one stable account and Logres can receive an authenticated decision for `logres.access` without direct database access.
+Accounts is live when a production identity can resolve to one stable account, Stripe can establish paid access through authenticated webhook state, and Logres can receive an authenticated decision for `logres.access` without direct database access.
 
 | ID | Ticket | Acceptance evidence | Gate | Status |
 |---|---|---|---|---|
@@ -18,8 +18,10 @@ Accounts is live when a production identity can resolve to one stable account an
 | ACC-010 | Integrate Logres | Logres signs in through Accounts and enforces `logres.access` | ACC-009, ACC-016 | Pending |
 | ACC-011 | Deploy Accounts to Laravel Cloud | Production health, database, secrets, logs, migrations, and rollback are verified | Domain and Cloud authority | Pending |
 | ACC-012 | Prove the launch path | A production identity signs in and reaches the authorized Logres request screen | ACC-010, ACC-011 | Pending |
-| ACC-013 | Select a payment provider | Decision records checkout, subscriptions, webhooks, refunds, export, and fees | Deferred until paid plan | Deferred |
-| ACC-014 | Implement payment-derived entitlements | Signed idempotent events alter named grants without exposing payment instruments | ACC-013 | Deferred |
+| ACC-013 | Select Stripe as the payment provider | Stripe owns checkout, payment instruments, subscriptions, invoices, refunds, and the customer billing portal | User decision | Complete |
+| ACC-014 | Implement Stripe-derived entitlements | Signed idempotent Stripe events alter named grants without exposing payment instruments | ACC-013 | Pending |
 | ACC-015 | Publish the public trust center | Stable public URLs list approved legal and compliance documents with version and effective date | Approved document copy | In progress |
 | ACC-016 | Build the reusable Accounts client package | Laravel applications can initiate login and call authenticated Accounts APIs without provider-specific application code | ACC-005, ACC-008 | Scaffolded; integrations pending |
 | ACC-017 | Integrate the Burd design system | Public account and trust surfaces consume the standalone Burd package | Burd package release | Pending |
+| ACC-018 | Implement Stripe checkout and billing portal handoffs | Accounts creates Stripe-hosted sessions and returns URLs without handling payment instruments | ACC-013, product and price decision | Pending |
+| ACC-019 | Reconcile Stripe commercial state | Accounts can repair missed webhook state from Stripe without duplicating subscription policy in products | ACC-014 | Pending |

@@ -18,14 +18,16 @@ The product invokes this workflow through the Accounts client package. Its selec
 3. Accounts evaluates active grants for that account and product.
 4. Accounts returns an explicit allowed or denied decision with the entitlement and evaluation time.
 
-## Apply a future payment event
+## Apply a Stripe payment event
 
-1. The payment provider sends a signed webhook.
-2. Accounts verifies the provider signature and idempotency identifier.
+1. Stripe sends a signed webhook.
+2. Accounts verifies the Stripe signature and event identifier.
 3. Accounts maps the external customer and commercial state to a stable Account.
 4. Accounts records the provider event without storing payment instruments.
 5. Accounts adds, changes, or revokes named entitlements according to accepted product policy.
 6. Connected products observe the new entitlement through API reads or future events.
+
+Stripe owns checkout, subscriptions, invoices, refunds, and the customer billing portal. Accounts owns the mapping from Stripe customers and commercial state to stable Accounts identities and named product entitlements.
 
 ## Publish a legal or compliance document
 
