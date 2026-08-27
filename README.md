@@ -23,6 +23,8 @@ The external identity provider and service-authentication protocol remain manual
 
 Stripe configuration is documented in [docs/stripe.md](docs/stripe.md). The only public Stripe route is the signature-verified webhook at `/api/stripe/webhooks`.
 
+The root URL is the public product and business site used for Stripe review. Run `php artisan accounts:stripe-readiness` before submitting its production URL to Stripe. See [docs/stripe-website-readiness.md](docs/stripe-website-readiness.md).
+
 ## Development
 
 ```bash
@@ -44,5 +46,6 @@ The local service root returns its readiness state. Laravel also exposes `/up` f
 - [Domain glossary](docs/glossary.md)
 - [Workflows and state](docs/workflows.md)
 - [Stripe setup](docs/stripe.md)
+- [Stripe website readiness](docs/stripe-website-readiness.md)
 - [Delivery tickets](docs/tickets.md)
 - [Machine-readable project memory](docs/project-memory/project.json)

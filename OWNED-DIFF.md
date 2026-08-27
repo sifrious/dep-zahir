@@ -22,6 +22,8 @@ CHARGES WHEN: Provider-specific claims leak beyond the adapter and become applic
 
 TRIGGER: Authentication is explicitly external while product identity must remain provider-independent.
 
+Laravel session storage defaults to files because the external-only authentication schema does not own the scaffold's database session table.
+
 ## Product entitlements — 2026-08-27
 
 SEAM: Separates the permission to use a product capability from payment-provider subscription objects.

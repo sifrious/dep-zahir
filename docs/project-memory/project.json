@@ -15,7 +15,8 @@
     "Applications integrate through a reusable Accounts client package.",
     "Stripe is the selected external payment provider.",
     "The official Stripe PHP SDK is installed behind the Accounts Stripe adapter.",
-    "Signed Stripe subscription events idempotently update Accounts entitlements."
+    "Signed Stripe subscription events idempotently update Accounts entitlements.",
+    "Accounts is the public business and product website submitted for Stripe review."
   ],
   "assumptions": [
     "One external identity provider can support browser and future NativePHP clients.",
@@ -46,6 +47,7 @@
     "What is the production domain for Logres?",
     "Which Stripe products and prices map to the initial Logres entitlements?",
     "Which legal and compliance documents are approved for initial publication?",
+    "What business name, support contacts, business address, and Logres price should be published?",
     "What outage grace period may Logres use for a previously observed entitlement?"
   ],
   "constraints": [
