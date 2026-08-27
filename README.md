@@ -21,7 +21,7 @@ Products consume Accounts through authenticated service contracts. They do not c
 - Central product configuration feeding product, pricing, billing, Stripe-readiness, and policy surfaces.
 - Public, status-labeled product behavior references generated from the central product registry.
 - In-development Free and Paid capability tiers for Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard.
-- Official Burd Design Blade components and self-hosted visual assets.
+- Official Burd Design Blade components and self-hosted visual assets installed from its tagged public GitHub package.
 
 The external identity provider and service-authentication protocol remain manual launch decisions. No public account-resolution or entitlement endpoint is exposed until those decisions are accepted.
 

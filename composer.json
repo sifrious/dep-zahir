@@ -7,14 +7,8 @@
     "license": "MIT",
     "repositories": [
         {
-            "type": "path",
-            "url": "/Users/mme/Projects/official-burd-design",
-            "options": {
-                "symlink": true,
-                "versions": {
-                    "sifrious/official-burd-design": "0.1.0"
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/sifrious/official-burd-design"
         }
     ],
     "require": {

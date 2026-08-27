@@ -22,7 +22,7 @@
     "Accounts publishes product families for Accounts Client, Aleph, Bindle, Burdgeon, Funes, Kilgore, Logres, and Menard.",
     "Every current product family has an in-development Free tier and Paid tier with separate capability lists.",
     "Free tiers do not require Stripe Price IDs; every Paid tier blocks Stripe readiness until its price and Stripe Price ID are configured.",
-    "Accounts consumes Official Burd Design v0.1.0 locally for its public interface."
+    "Accounts consumes the tagged Official Burd Design package from https://github.com/sifrious/official-burd-design for its public interface."
   ],
   "assumptions": [
     "One external identity provider can support browser and future NativePHP clients.",
@@ -59,8 +59,7 @@
     "Which Stripe products and prices map to the initial Logres entitlements?",
     "Which legal and compliance documents are approved for initial publication?",
     "What business name, support contacts, business address, and Logres price should be published?",
-    "What outage grace period may Logres use for a previously observed entitlement?",
-    "Where will the Official Burd Design v0.1.0 package be published for Laravel Cloud installation?"
+    "What outage grace period may Logres use for a previously observed entitlement?"
   ],
   "constraints": [
     "No passwords, MFA secrets, raw payment instruments, or product-domain records in Accounts.",

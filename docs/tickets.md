@@ -22,7 +22,7 @@ Accounts is live when a production identity can resolve to one stable account, S
 | ACC-014 | Implement Stripe-derived entitlements | Signed idempotent Stripe events alter named grants without exposing payment instruments | ACC-013 | Complete |
 | ACC-015 | Publish the public trust center | Stable public URLs list approved legal and compliance documents with version and effective date | Approved document copy | In progress |
 | ACC-016 | Build the reusable Accounts client package | Laravel applications can initiate login and call authenticated Accounts APIs without provider-specific application code | ACC-005, ACC-008 | Scaffolded; integrations pending |
-| ACC-017 | Integrate the Burd design system | Public account and trust surfaces consume the standalone Burd package | Publish v0.1.0 for Laravel Cloud | Complete locally; production publication pending |
+| ACC-017 | Integrate the Burd design system | Public account and trust surfaces consume the standalone Burd package | Published v0.1.0 package | Complete |
 | ACC-018 | Implement Stripe checkout and billing portal handoffs | Accounts creates Stripe-hosted sessions and returns URLs without handling payment instruments | ACC-005, product and price decision | Services complete; authenticated routes pending |
 | ACC-019 | Reconcile Stripe commercial state | Accounts can repair missed webhook state from Stripe without duplicating subscription policy in products | ACC-014 | Pending |
 | ACC-020 | Publish the Stripe-verifiable business and product site | The public root identifies the business, describes every sold product, displays price and currency, exposes support details, and links required approved policies | Business facts and approved policy copy | Structure complete; content decisions required |

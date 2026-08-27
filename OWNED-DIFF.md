@@ -90,7 +90,7 @@ Signals: stable v21.3.0 resolved on 2026-08-27; active releases in July and Augu
 
 ## dep: sifrious/official-burd-design — 2026-08-27, ACC-017
 
-SEAM: borrowed — serviced in the local Official Burd Design repository; transitive: 0 new packages because its Illuminate requirements are already supplied by Laravel.
+SEAM: borrowed — serviced in the public Official Burd Design repository and installed from a tagged Composer VCS release; transitive: 0 new packages because its Illuminate requirements are already supplied by Laravel.
 
 PAYS WHEN: Accounts pricing, billing, product, and policy pages need the same production Blade components and visual tokens as Logres without copying the design system.
 
@@ -99,6 +99,8 @@ CHARGES WHEN: A breaking component or stylesheet release requires updating the A
 TRIGGER: Accounts now has multiple related public commerce surfaces and the standalone production design package is available.
 
 Signals: release boundary commit `645da43` dated 2026-08-27; one current repository contributor; maintained alongside its consuming products; no external issue tracker yet.
+
+Production resolves `sifrious/official-burd-design` from `https://github.com/sifrious/official-burd-design`. Machine-specific Composer path repositories are forbidden because they cannot exist in Laravel Cloud. The committed lockfile selects the immutable tagged source used by local, CI, and production installs.
 
 The Vite entry compiles only the Burd-backed production stylesheet. The scaffold's Bunny font fetch and Tailwind transform are removed because Burd supplies self-hosted fonts and complete visual tokens.
 
