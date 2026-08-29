@@ -40,6 +40,14 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 | MME-1533 / ZAHIR-003 | Authenticated resolution and entitlement contracts | API tests and protected routes |
 | ZAHIR-004 | Reusable client aligned with finalized contracts | `dep-accounts-client` `dd3d521`; PHPUnit and PHPStan |
 
+## Execution status
+
+| Ticket | Status | Evidence |
+|---|---|---|
+| ZAHIR-005 | Complete | Canonical v1 fixtures; Zahir 17 tests/52 assertions; client `bf6bfc2`, 3 tests/15 assertions and PHPStan |
+| ZAHIR-014A | In progress | Baseline CI gates are the next prerequisite |
+| ZAHIR-006 onward | Not started | Waiting on prerequisites |
+
 ## Wave 2 — deterministic integration
 
 ### ZAHIR-005 — Publish contract fixtures and compatibility tests
