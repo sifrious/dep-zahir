@@ -55,8 +55,11 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 | ZAHIR-012 | Complete | `logres-site` `0765357`; 18 tests/53 assertions, Pint, and audit pass across allow/deny/suspend/unknown/timeout/stale/mismatch cases |
 | ZAHIR-013 | Complete | Zahir `76833e2`, host `ae4d57f`; structured redaction tests pass with 26 tests/104 assertions and 18 tests/54 assertions |
 | ZAHIR-014B | Complete | `352a994`; local rehearsal and GitHub CI run `33236125152` passed backup/restore counts, rollback/forward migration, manifest artifact, tests, scans, and audits |
-| ZAHIR-018A | In progress | Pre-production threat review, outage/compromise runbooks, and remediation evidence |
-| ZAHIR-015 onward | Not started | Waiting on implementation sequence |
+| ZAHIR-018A | External gate | Review and incident runbook complete; JWKS rotation finding resolved in client `4400419`; no unresolved high findings; security-owner acceptance of M-01 through M-03 remains required |
+| ZAHIR-015 | Not started | Requires ZAHIR-018A security-owner acceptance and deployment authority/infrastructure |
+| ZAHIR-016 | Not started | Requires ZAHIR-018A security-owner acceptance and WorkOS production administration |
+| ZAHIR-017 | Not started | Requires deployed Zahir, configured WorkOS application, and authorized production test identity |
+| ZAHIR-018B | Not started | Requires ZAHIR-017 evidence, operational contacts, and accountable launch-owner decision |
 
 ## Wave 2 — deterministic integration
 
