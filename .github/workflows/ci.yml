@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: vendor/bin/pint --test
+      - run: php artisan test --compact
+      - run: php artisan migrate:fresh --force && php artisan migrate:fresh --force
+      - run: composer audit --locked --no-interaction
+      - name: Verify canonical contract digest
+        run: test "$(sha256sum contracts/v1/fixtures.json | cut -d' ' -f1)" = "$(tr -d '\n' < contracts/v1/CANONICAL_SHA256)"
