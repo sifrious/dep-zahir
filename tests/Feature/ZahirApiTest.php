@@ -6,6 +6,8 @@ use App\Models\Account;
 use App\Models\EntitlementGrant;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Mockery;
 use Tests\TestCase;
 
 class ZahirApiTest extends TestCase
@@ -28,6 +30,7 @@ class ZahirApiTest extends TestCase
 
     public function test_verified_identity_resolves_through_public_contract(): void
     {
+        Log::spy();
         $response = $this->withToken($this->token)->postJson('/api/v1/accounts/resolve', [
             'external' => [
                 'provider' => 'workos', 'provider_subject' => 'user_123',
@@ -40,6 +43,18 @@ class ZahirApiTest extends TestCase
         $response->assertOk()->assertJsonPath('account.status', 'active')->assertJsonPath('account.created', true);
         $this->assertStringStartsWith('acc_', $response->json('account.id'));
         $this->assertDatabaseHas('account_resolution_events', ['caller' => 'logres', 'outcome' => 'created']);
+        Log::shouldHaveReceived('info')->with(
+            'zahir.account_resolution',
+            Mockery::on(function (array $context): bool {
+                $encoded = json_encode($context, JSON_THROW_ON_ERROR);
+
+                return $context['outcome'] === 'created'
+                    && isset($context['latency_ms'], $context['metric_count'])
+                    && ! str_contains($encoded, 'user_123')
+                    && ! str_contains($encoded, 'person@example.test')
+                    && ! str_contains($encoded, $this->token);
+            }),
+        )->once();
     }
 
     public function test_entitlement_contract_allows_then_denies_suspended_account(): void
