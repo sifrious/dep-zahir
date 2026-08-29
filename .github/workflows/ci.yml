@@ -22,5 +22,7 @@ jobs:
       - run: php artisan test --compact
       - run: php artisan migrate:fresh --force && php artisan migrate:fresh --force
       - run: composer audit --locked --no-interaction
+      - name: Scan Git history for secrets
+        run: go run github.com/gitleaks/gitleaks/v8@v8.28.0 git --redact --no-banner
       - name: Verify canonical contract digest
         run: test "$(sha256sum contracts/v1/fixtures.json | cut -d' ' -f1)" = "$(tr -d '\n' < contracts/v1/CANONICAL_SHA256)"
