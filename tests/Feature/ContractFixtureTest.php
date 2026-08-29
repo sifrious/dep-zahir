@@ -13,17 +13,19 @@ class ContractFixtureTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $token;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['zahir.service_tokens' => ['fixture-client' => 'fixture-token']]);
+        $this->token = $this->serviceToken('fixture-client');
         Date::setTestNow('2026-08-29T12:00:00Z');
     }
 
     public function test_resolution_contract_matches_v1_fixture(): void
     {
         $case = $this->fixtures()['cases']['account.resolve.success'];
-        $response = $this->withToken('fixture-token')
+        $response = $this->withToken($this->token)
             ->postJson('/api/v1/accounts/resolve', $case['request'])
             ->assertStatus($case['response']['status'])
             ->assertJsonPath('account.status', $case['response']['body']['account']['status'])
@@ -43,7 +45,7 @@ class ContractFixtureTest extends TestCase
 
         $allow = $this->fixtures()['cases']['entitlement.allow'];
         $allow['request']['account_id'] = $active->id;
-        $this->withToken('fixture-token')->postJson('/api/v1/entitlements/decide', $allow['request'])
+        $this->withToken($this->token)->postJson('/api/v1/entitlements/decide', $allow['request'])
             ->assertStatus($allow['response']['status'])
             ->assertJsonPath('allowed', true)
             ->assertJsonPath('account_status', 'active');
@@ -51,7 +53,7 @@ class ContractFixtureTest extends TestCase
         $active->update(['status' => 'suspended']);
         $deny = $this->fixtures()['cases']['entitlement.deny'];
         $deny['request']['account_id'] = $active->id;
-        $this->withToken('fixture-token')->postJson('/api/v1/entitlements/decide', $deny['request'])
+        $this->withToken($this->token)->postJson('/api/v1/entitlements/decide', $deny['request'])
             ->assertStatus($deny['response']['status'])
             ->assertJsonPath('allowed', false)
             ->assertJsonPath('account_status', 'suspended')
@@ -65,14 +67,14 @@ class ContractFixtureTest extends TestCase
             ->assertStatus($fixtures['error.authentication']['response']['status'])
             ->assertExactJson($fixtures['error.authentication']['response']['body']);
 
-        $response = $this->withToken('fixture-token')->postJson('/api/v1/accounts/resolve', ['external' => []])
+        $response = $this->withToken($this->token)->postJson('/api/v1/accounts/resolve', ['external' => []])
             ->assertStatus($fixtures['error.validation']['response']['status']);
         $this->assertSame(
             $fixtures['error.validation']['response']['body']['errors']['external.provider'][0],
             $response->json('errors')['external.provider'][0],
         );
 
-        $this->withToken('fixture-token')->postJson('/api/v1/entitlements/decide', [
+        $this->withToken($this->token)->postJson('/api/v1/entitlements/decide', [
             'account_id' => 'acc_00000000000000000000000000',
             'product' => 'logres',
             'entitlement' => 'access',

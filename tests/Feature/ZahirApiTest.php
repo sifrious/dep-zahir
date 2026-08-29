@@ -12,10 +12,12 @@ class ZahirApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $token;
+
     protected function setUp(): void
     {
         parent::setUp();
-        config(['zahir.service_tokens' => ['logres' => 'test-token']]);
+        $this->token = $this->serviceToken('logres');
     }
 
     public function test_contracts_require_authenticated_service_caller(): void
@@ -26,7 +28,7 @@ class ZahirApiTest extends TestCase
 
     public function test_verified_identity_resolves_through_public_contract(): void
     {
-        $response = $this->withToken('test-token')->postJson('/api/v1/accounts/resolve', [
+        $response = $this->withToken($this->token)->postJson('/api/v1/accounts/resolve', [
             'external' => [
                 'provider' => 'workos', 'provider_subject' => 'user_123',
                 'claims' => ['email' => 'person@example.test', 'email_verified' => true],
@@ -50,10 +52,10 @@ class ZahirApiTest extends TestCase
         ]);
         $payload = ['account_id' => $account->id, 'product' => 'logres', 'entitlement' => 'access'];
 
-        $this->withToken('test-token')->postJson('/api/v1/entitlements/decide', $payload)
+        $this->withToken($this->token)->postJson('/api/v1/entitlements/decide', $payload)
             ->assertOk()->assertJsonPath('allowed', true)->assertJsonPath('account_status', 'active');
         $account->update(['status' => 'suspended']);
-        $this->withToken('test-token')->postJson('/api/v1/entitlements/decide', $payload)
+        $this->withToken($this->token)->postJson('/api/v1/entitlements/decide', $payload)
             ->assertOk()->assertJsonPath('allowed', false)->assertJsonPath('account_status', 'suspended');
     }
 }
