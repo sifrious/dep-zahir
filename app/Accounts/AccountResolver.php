@@ -57,6 +57,11 @@ final readonly class AccountResolver
     public function link(string $accountId, VerifiedExternal $verified, ?string $caller = null): AccountResolution
     {
         return DB::transaction(function () use ($accountId, $verified, $caller): AccountResolution {
+            if ($verified->authenticatedAt->lt(now()->subSeconds((int) config('zahir.identity_link_max_age_seconds', 600)))
+                || $verified->authenticatedAt->isFuture()) {
+                throw new IdentityLinkRejected('Identity assertion is not fresh enough to link.');
+            }
+
             $account = Account::query()->lockForUpdate()->findOrFail($accountId);
             $identities = $this->identities($verified);
 
@@ -71,6 +76,13 @@ final readonly class AccountResolver
                     throw IdentityCollision::linkedElsewhere();
                 }
 
+                $identity->update([
+                    'verified_claims' => $verified->claims,
+                    'provenance' => $verified->provenance,
+                    'last_authenticated_at' => $verified->authenticatedAt,
+                ]);
+                $this->audit($verified, $accountId, 'link_replayed', $caller);
+
                 return new AccountResolution($account->id, $account->status->value, false);
             }
 
@@ -78,6 +90,38 @@ final readonly class AccountResolver
             $this->audit($verified, $accountId, 'linked', $caller);
 
             return new AccountResolution($account->id, $account->status->value, false);
+        }, 3);
+    }
+
+    public function unlink(
+        string $accountId,
+        string $provider,
+        string $providerSubject,
+        ?string $caller = null,
+        ?string $acceptedRecoveryReference = null,
+    ): IdentityUnlinkResult {
+        return DB::transaction(function () use ($accountId, $provider, $providerSubject, $caller, $acceptedRecoveryReference): IdentityUnlinkResult {
+            $account = Account::query()->lockForUpdate()->findOrFail($accountId);
+            $identity = $account->externalIdentities()
+                ->where('provider', $provider)
+                ->where('provider_subject', $providerSubject)
+                ->lockForUpdate()
+                ->first();
+
+            if ($identity === null) {
+                $this->auditSubject($accountId, $provider, $providerSubject, 'unlink_unchanged', $caller);
+
+                return new IdentityUnlinkResult($accountId, 'unchanged');
+            }
+
+            if ($account->externalIdentities()->count() === 1 && $acceptedRecoveryReference === null) {
+                throw new IdentityLinkRejected('The last usable identity requires an accepted recovery path.');
+            }
+
+            $identity->delete();
+            $this->auditSubject($accountId, $provider, $providerSubject, 'unlinked', $caller, $acceptedRecoveryReference);
+
+            return new IdentityUnlinkResult($accountId, 'unlinked');
         }, 3);
     }
 
@@ -112,6 +156,27 @@ final readonly class AccountResolver
             'outcome' => $outcome,
             'caller' => $caller,
             'provenance' => $verified->provenance,
+            'occurred_at' => now(),
+        ]);
+    }
+
+    private function auditSubject(
+        string $accountId,
+        string $provider,
+        string $providerSubject,
+        string $outcome,
+        ?string $caller,
+        ?string $acceptedRecoveryReference = null,
+    ): void {
+        AccountResolutionEvent::query()->create([
+            'account_id' => $accountId,
+            'provider' => $provider,
+            'provider_subject_hash' => hash('sha256', $providerSubject),
+            'outcome' => $outcome,
+            'caller' => $caller,
+            'provenance' => $acceptedRecoveryReference === null
+                ? []
+                : ['accepted_recovery_reference' => $acceptedRecoveryReference],
             'occurred_at' => now(),
         ]);
     }

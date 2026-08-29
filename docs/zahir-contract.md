@@ -37,6 +37,16 @@ Request: `{"account_id":"acc_...","product":"logres","entitlement":"access"}`.
 
 The response contains `allowed`, `account_id`, `account_status`, `product`, `entitlement`, `evaluated_at`, and nullable `grant_id`. Suspended accounts, inactive products, absent grants, future grants, expired grants, and revoked grants deny access.
 
+## Identity linking and unlinking
+
+`POST /api/v1/accounts/{account}/identities/link` accepts the same provider-neutral `external` assertion as resolution. The authenticated product must also send its current opaque session account in `X-Zahir-Current-Account`, exactly matching the target. Assertions must be newly authenticated within the configured short window. Replay on the same account is idempotent; an identity owned elsewhere returns only `Identity linking failed` and never reveals its owner.
+
+`DELETE /api/v1/accounts/{account}/identities` accepts `provider` and `provider_subject`. Repeating an unlink returns the opaque `unchanged` outcome. Removing the last usable identity fails unless a lifecycle-authorized caller supplies an accepted recovery reference.
+
+## Account lifecycle
+
+Lifecycle-authorized callers may suspend with `POST /api/v1/accounts/{account}/suspension` and reactivate with `DELETE` on the same path. Both require a reason and create a distinct lifecycle audit event. Ordinary product callers receive HTTP 403. No caller receives storage handles or mutates Zahir tables directly.
+
 ## Service authentication
 
-The first internal contract uses caller-specific bearer credentials. Credentials are deployment secrets and are compared in constant time. The authenticated caller name is attached to audit events. A future signed-service-token decision may replace this without changing domain contracts.
+The internal contract uses caller-specific, hash-only bearer credentials. The authenticated caller and credential are attached to audit events. Account-lifecycle authority is a separate caller capability and defaults off. A future workload-identity decision may replace this without changing domain contracts.

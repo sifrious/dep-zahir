@@ -3,6 +3,7 @@
 return [
     'maximum_request_bytes' => (int) env('ZAHIR_MAXIMUM_REQUEST_BYTES', 32768),
     'requests_per_minute' => (int) env('ZAHIR_REQUESTS_PER_MINUTE', 120),
+    'identity_link_max_age_seconds' => (int) env('ZAHIR_IDENTITY_LINK_MAX_AGE_SECONDS', 600),
     'products' => [
         'logres' => [
             'name' => 'Logres',

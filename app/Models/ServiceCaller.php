@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['key', 'name', 'disabled_at'])]
+#[Fillable(['key', 'name', 'disabled_at', 'can_manage_account_lifecycle'])]
 class ServiceCaller extends Model
 {
     use HasUlids;
@@ -19,6 +19,9 @@ class ServiceCaller extends Model
 
     protected function casts(): array
     {
-        return ['disabled_at' => 'immutable_datetime'];
+        return [
+            'disabled_at' => 'immutable_datetime',
+            'can_manage_account_lifecycle' => 'boolean',
+        ];
     }
 }

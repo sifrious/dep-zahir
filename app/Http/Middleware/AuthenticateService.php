@@ -24,6 +24,7 @@ final class AuthenticateService
         $requestId = $request->headers->get('X-Request-ID') ?: (string) Str::uuid();
         $request->attributes->set('zahir.caller', $caller->key);
         $request->attributes->set('zahir.credential_id', $credential->id);
+        $request->attributes->set('zahir.can_manage_account_lifecycle', $caller->can_manage_account_lifecycle);
         $response = $next($request);
 
         ServiceRequestEvent::query()->create([

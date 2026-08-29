@@ -81,7 +81,7 @@ class AccountResolverTest extends TestCase
             $provider, $subject,
             array_filter(['email' => $email], fn ($value) => $value !== null),
             $this->provenance(),
-            CarbonImmutable::parse('2026-08-29T12:00:00Z'),
+            CarbonImmutable::now(),
         );
     }
 
