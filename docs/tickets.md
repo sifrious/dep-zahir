@@ -48,8 +48,9 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 | ZAHIR-014A | Complete | Zahir CI `3581b97` and client CI `22594d4`; pushed GitHub runs passed tests, analysis, migrations, audits, contract digests, and Gitleaks |
 | ZAHIR-006 | Complete | `dep-accounts-client` `a849ab9`; 8 tests/122 assertions, PHPStan max, and contract checksum pass |
 | ZAHIR-007 | Complete | `dfb3c42`; 20 tests/66 assertions, Pint, dependency audit, and fresh migration replay pass |
-| ZAHIR-009 | In progress | Scaffolding the Logres-owned HTTP/session/local-user integration boundary |
-| ZAHIR-011 onward | Not started | Waiting on implementation sequence |
+| ZAHIR-009 | Complete | `logres-site` `0184855`; 7 tests/19 assertions, Pint, audits, migrations, and production asset build pass |
+| ZAHIR-011 | In progress | Idempotent Logres product and entitlement-policy bootstrap |
+| ZAHIR-008 onward | Not started | Waiting on implementation sequence |
 
 ## Wave 2 — deterministic integration
 
