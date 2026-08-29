@@ -2,6 +2,35 @@
 
 This is the dependency-ordered backlog from foundation to a production-proven first consumer. Routine implementation proceeds without repeated approval. Work pauses only at explicit external gates.
 
+## Canonical prerequisite order
+
+This is the execution order. A ticket may start only after every item in `Requires` is complete. Tickets shown at the same stage may run in parallel.
+
+| Stage | Ticket | Requires | Blocks |
+|---:|---|---|---|
+| 0 | ZAHIR-001 — Account and identity domain | None | 003, 008, 011 |
+| 0 | ZAHIR-002 — WorkOS decision and neutral adapter boundary | None | 006 |
+| 0 | ZAHIR-003 — Resolution and entitlement contracts | 001 | 004, 007, 008, 011 |
+| 0 | ZAHIR-004 — Reusable client alignment | 003 | 005, 006, 008, 009 |
+| 1 | ZAHIR-005 — Shared contract fixtures | 003, 004 | 014A |
+| 2 | ZAHIR-014A — Baseline CI gates | 005 | 006, 007, 008, 009, 010, 011, 012, 013 |
+| 3A | ZAHIR-006 — WorkOS login driver | 002, 004, 005, 014A | 010, 016 |
+| 3A | ZAHIR-007 — Service authentication hardening | 003, 005, 014A | 008, 010, 012, 013 |
+| 3A | ZAHIR-009 — Logres host scaffold | 004, 005, 014A | 010, 012 |
+| 3A | ZAHIR-011 — Logres product/entitlement bootstrap | 001, 003, 005, 014A | 012 |
+| 4 | ZAHIR-008 — Linking and lifecycle contracts | 005, 007 | 013, 018A |
+| 5 | ZAHIR-010 — Logres WorkOS login | 006, 007, 009 | 012, 016, 018A |
+| 6 | ZAHIR-012 — Logres entitlement enforcement | 007, 009, 010, 011 | 013, 018A |
+| 7 | ZAHIR-013 — Observability and audit operations | 007, 008, 012 | 014B, 018A |
+| 8 | ZAHIR-014B — Release, migration, backup, and rollback gates | 006, 007, 008, 009, 010, 011, 012, 013, 014A | 018A, 015 |
+| 9 | ZAHIR-018A — Pre-deployment security review | 008, 010, 012, 013, 014B | 015, 016 |
+| 10A | ZAHIR-015 — Deploy Zahir infrastructure | 014B, 018A | 017 |
+| 10A | ZAHIR-016 — Configure WorkOS production application | 006, 010, 018A | 017 |
+| 11 | ZAHIR-017 — End-to-end launch proof | 012, 013, 015, 016 | 018B |
+| 12 | ZAHIR-018B — Final launch sign-off | 017 | Launch |
+
+The `3A` tickets are independent after baseline CI and may run in parallel. ZAHIR-015 and ZAHIR-016 may also run in parallel after the pre-deployment security review. Post-launch tickets 019–022 are trigger-based and are not prerequisites for launch.
+
 ## Completed foundation
 
 | ID | Outcome | Evidence |
@@ -128,12 +157,17 @@ External gate: outage-grace duration only if strict fail-closed is unacceptable.
 - Audit retention/access/deletion procedures are documented.
 - Readiness distinguishes process and database health.
 
-### ZAHIR-014 — Add CI, migration, backup, and rollback gates
+### ZAHIR-014A — Add baseline CI gates
 
-- All repositories run formatting, tests, static analysis, contract compatibility, and migration checks.
+- Zahir and client pull requests run formatting, tests, static analysis, contract compatibility, and migration checks.
+- Logres host CI is installed when ZAHIR-009 creates the application.
+- Dependency and secret scanning are enabled before integration code grows.
+
+### ZAHIR-014B — Add release, migration, backup, and rollback gates
+
 - Production migrations have backup prerequisites and rollback rehearsal.
 - Restore verification preserves accounts, mappings, entitlements, and provenance.
-- Dependency and secret scanning are enabled.
+- Release artifacts identify exact service, client, and host commits.
 
 ### ZAHIR-015 — Deploy Zahir infrastructure
 
@@ -163,14 +197,23 @@ External gate: WorkOS administrative access.
 
 External gate: authorized production test identity and smoke-test approval.
 
-### ZAHIR-018 — Security review and launch sign-off
+### ZAHIR-018A — Pre-deployment security review
 
 - Review covers callback attacks, replay, linking, confused deputy, service credentials, enumeration, logging, and backup exposure.
 - High-severity findings are resolved or explicitly accepted.
 - Runbook covers provider/Zahir outage, compromise, suspension, and rollback.
-- Launch evidence references exact deployed commits/configuration.
+- Approved findings and required remediations are recorded before production configuration.
 
-External gate: accountable security/launch owner sign-off.
+External gate: accountable security owner acceptance of any unresolved finding.
+
+### ZAHIR-018B — Final launch sign-off
+
+- ZAHIR-017 evidence references exact deployed commits and configuration versions.
+- Every launch prerequisite is complete or has explicit accountable-owner acceptance.
+- Operational ownership and incident contacts are recorded.
+- The accountable launch owner records the go/no-go decision.
+
+External gate: accountable launch owner sign-off.
 
 ## Post-launch triggers
 
