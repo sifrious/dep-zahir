@@ -46,8 +46,9 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 |---|---|---|
 | ZAHIR-005 | Complete | Canonical v1 fixtures; Zahir 17 tests/52 assertions; client `bf6bfc2`, 3 tests/15 assertions and PHPStan |
 | ZAHIR-014A | Complete | Zahir CI `3581b97` and client CI `22594d4`; pushed GitHub runs passed tests, analysis, migrations, audits, contract digests, and Gitleaks |
-| ZAHIR-006 | In progress | WorkOS driver is the next executable prerequisite |
-| ZAHIR-007, 009, 011 onward | Not started | Waiting on implementation sequence |
+| ZAHIR-006 | Complete | `dep-accounts-client` `a849ab9`; 8 tests/122 assertions, PHPStan max, and contract checksum pass |
+| ZAHIR-007 | In progress | Service caller credential identity, overlap rotation, revocation, and attribution |
+| ZAHIR-009, 011 onward | Not started | Waiting on implementation sequence |
 
 ## Wave 2 — deterministic integration
 
