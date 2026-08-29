@@ -50,8 +50,9 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 | ZAHIR-007 | Complete | `dfb3c42`; 20 tests/66 assertions, Pint, dependency audit, and fresh migration replay pass |
 | ZAHIR-009 | Complete | `logres-site` `0184855`; 7 tests/19 assertions, Pint, audits, migrations, and production asset build pass |
 | ZAHIR-011 | Complete | Zahir `b4003e6`, client `725dbf6`, host `8376fea`; all suites and deterministic seed replay pass |
-| ZAHIR-008 | In progress | Explicit linking, unlink recovery safety, and authenticated lifecycle operations |
-| ZAHIR-010 onward | Not started | Waiting on implementation sequence |
+| ZAHIR-008 | Complete | Zahir `6599693`, client `f56fd73`; 26 tests/103 assertions and 10 tests/128 assertions, analysis, audits, and migration replay pass |
+| ZAHIR-010 | In progress | Host-owned WorkOS login, callback, local projection, session, logout, and failure handling |
+| ZAHIR-012 onward | Not started | Waiting on implementation sequence |
 
 ## Wave 2 — deterministic integration
 
