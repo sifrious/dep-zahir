@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Database\Seeders\LogresProductSeeder;
+use Database\Seeders\ReleaseRehearsalSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -38,5 +39,22 @@ final class LogresProductSeederTest extends TestCase
             'source' => 'development_seed',
             'source_reference' => 'zahir-011-v1',
         ]);
+    }
+
+    public function test_release_rehearsal_fixture_covers_restored_authoritative_data(): void
+    {
+        $this->seed(ReleaseRehearsalSeeder::class);
+        $this->seed(ReleaseRehearsalSeeder::class);
+
+        foreach ([
+            'accounts',
+            'external_identities',
+            'entitlement_grants',
+            'account_resolution_events',
+            'account_lifecycle_events',
+            'service_request_events',
+        ] as $table) {
+            $this->assertDatabaseCount($table, 1);
+        }
     }
 }

@@ -26,3 +26,21 @@ jobs:
         run: go run github.com/zricethezav/gitleaks/v8@v8.28.0 git --redact --no-banner
       - name: Verify canonical contract digest
         run: test "$(sha256sum contracts/v1/fixtures.json | cut -d' ' -f1)" = "$(tr -d '\n' < contracts/v1/CANONICAL_SHA256)"
+      - name: Rehearse migration backup, rollback, and restore
+        run: |
+          php artisan migrate:fresh --force
+          php artisan db:seed --class=Database\\Seeders\\ReleaseRehearsalSeeder --force
+          sqlite3 database/database.sqlite "select count(*) from accounts; select count(*) from external_identities; select count(*) from entitlement_grants; select count(*) from account_resolution_events; select count(*) from account_lifecycle_events; select count(*) from service_request_events" > /tmp/zahir-counts.before
+          test "$(grep -c '^[1-9]' /tmp/zahir-counts.before)" = 6
+          cp database/database.sqlite /tmp/zahir-backup.sqlite
+          php artisan migrate:rollback --force
+          php artisan migrate --force
+          cp /tmp/zahir-backup.sqlite database/database.sqlite
+          sqlite3 database/database.sqlite "pragma foreign_key_check; select count(*) from accounts; select count(*) from external_identities; select count(*) from entitlement_grants; select count(*) from account_resolution_events; select count(*) from account_lifecycle_events; select count(*) from service_request_events" > /tmp/zahir-counts.after
+          diff -u /tmp/zahir-counts.before /tmp/zahir-counts.after
+      - name: Build exact release manifest
+        run: bin/release-manifest > release-manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: release-manifest.json

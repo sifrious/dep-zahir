@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+$components = json_decode(
+    file_get_contents(__DIR__.'/../release/components.json'),
+    true,
+    flags: JSON_THROW_ON_ERROR,
+);
+$serviceCommit = trim((string) shell_exec('git rev-parse HEAD'));
+$manifest = [
+    'generated_at' => gmdate('Y-m-d\TH:i:s\Z'),
+    'zahir_service_commit' => $serviceCommit,
+    ...$components,
+];
+
+foreach (['zahir_service_commit', 'accounts_client_commit', 'logres_host_commit'] as $field) {
+    if (preg_match('/^[a-f0-9]{40}$/', $manifest[$field] ?? '') !== 1) {
+        fwrite(STDERR, "Release component {$field} is not an exact commit.\n");
+        exit(1);
+    }
+}
+
+echo json_encode($manifest, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR).PHP_EOL;
