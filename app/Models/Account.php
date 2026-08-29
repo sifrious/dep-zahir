@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Accounts\AccountStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
-#[Fillable(['status', 'display_name'])]
+#[Fillable(['status'])]
 class Account extends Model
 {
-    use HasUlids;
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $attributes = [
         'status' => 'active',
@@ -27,8 +29,15 @@ class Account extends Model
         return $this->hasMany(EntitlementGrant::class);
     }
 
-    public function stripeCustomer(): HasOne
+    protected static function booted(): void
     {
-        return $this->hasOne(StripeCustomer::class);
+        static::creating(function (Account $account): void {
+            $account->id ??= 'acc_'.strtolower((string) Str::ulid());
+        });
+    }
+
+    protected function casts(): array
+    {
+        return ['status' => AccountStatus::class];
     }
 }

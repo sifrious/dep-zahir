@@ -16,7 +16,7 @@ final readonly class EntitlementDecider
     ): EntitlementDecision {
         $evaluatedAt ??= CarbonImmutable::now();
 
-        $grant = $account->status === 'active'
+        $grant = $account->status === AccountStatus::Active
             ? EntitlementGrant::query()
                 ->whereBelongsTo($account)
                 ->whereHas('product', fn ($query) => $query

@@ -9,20 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('accounts', function (Blueprint $table): void {
-            $table->ulid('id')->primary();
+            $table->string('id', 30)->primary();
             $table->string('status')->default('active');
-            $table->string('display_name')->nullable();
             $table->timestamps();
         });
 
         Schema::create('external_identities', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->foreignUlid('account_id')->constrained()->cascadeOnDelete();
-            $table->string('issuer');
-            $table->string('subject');
+            $table->string('provider', 64);
+            $table->string('provider_subject', 512);
+            $table->json('verified_claims');
+            $table->json('provenance');
+            $table->timestamp('linked_at');
             $table->timestamp('last_authenticated_at')->nullable();
             $table->timestamps();
-            $table->unique(['issuer', 'subject']);
+            $table->unique(['provider', 'provider_subject']);
         });
 
         Schema::create('products', function (Blueprint $table): void {
@@ -46,10 +48,23 @@ return new class extends Migration
             $table->timestamps();
             $table->index(['account_id', 'product_id', 'entitlement']);
         });
+
+        Schema::create('account_resolution_events', function (Blueprint $table): void {
+            $table->ulid('id')->primary();
+            $table->string('account_id', 30)->nullable()->index();
+            $table->string('provider', 64);
+            $table->string('provider_subject_hash', 64);
+            $table->string('outcome', 64);
+            $table->string('caller', 128)->nullable();
+            $table->json('provenance');
+            $table->timestamp('occurred_at');
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('account_resolution_events');
         Schema::dropIfExists('entitlement_grants');
         Schema::dropIfExists('products');
         Schema::dropIfExists('external_identities');

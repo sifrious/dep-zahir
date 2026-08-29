@@ -1,21 +1,12 @@
 <?php
 
-use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\AccountResolutionController;
+use App\Http\Controllers\EntitlementDecisionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/status', function () {
-    return response()->json([
-        'service' => 'accounts',
-        'status' => 'ready_for_identity_provider',
-        'health' => url('/up'),
-        'integrations' => [
-            'stripe' => [
-                'configured' => filled(config('services.stripe.secret'))
-                    && filled(config('services.stripe.webhook_secret'))
-                    && filled(config('services.stripe.prices.logres.price_id')),
-            ],
-        ],
-    ]);
-});
+Route::get('/status', fn () => response()->json(['service' => 'zahir', 'status' => 'ready']));
 
-Route::post('/stripe/webhooks', StripeWebhookController::class)->name('stripe.webhooks');
+Route::middleware('zahir.service')->prefix('v1')->group(function (): void {
+    Route::post('/accounts/resolve', AccountResolutionController::class);
+    Route::post('/entitlements/decide', EntitlementDecisionController::class);
+});

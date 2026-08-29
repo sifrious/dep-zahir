@@ -1,38 +1,16 @@
-# Workflows
+# Zahir workflows
 
-## Sign in and resolve an account
+## Resolve a verified identity
 
-1. A product redirects a person to the selected identity provider.
-2. The provider authenticates the person and returns a signed identity assertion.
-3. The product or Accounts validates the assertion under the accepted protocol.
-4. Accounts resolves the assertion's issuer and subject to one external identity.
-5. Accounts returns the linked stable Account, creating it only under the accepted account-creation policy.
-6. The product stores the Account ID in its local projection.
+1. A product adapter completes authorization code + PKCE and validates state, nonce, issuer, audience, signature, time claims, callback allowlist, and replay.
+2. It converts the assertion into provider-neutral `VerifiedExternal` data.
+3. The authenticated product calls Zahir's resolution contract.
+4. Zahir looks up `(provider, provider_subject)`, creates an opaque account only when absent, refreshes safe claims, and records provenance.
+5. The product projects the returned account ID into its own local user/session.
 
-The product invokes this workflow through the Accounts client package. Its selected `LoginDriver` performs the provider redirect and converts the verified callback into the provider-independent issuer and subject value.
+## Decide an entitlement
 
-## Check product access
-
-1. A product authenticates itself to Accounts.
-2. The product supplies an Account ID and entitlement key.
-3. Accounts evaluates active grants for that account and product.
-4. Accounts returns an explicit allowed or denied decision with the entitlement and evaluation time.
-
-## Apply a Stripe payment event
-
-1. Stripe sends a signed webhook.
-2. Accounts verifies the Stripe signature and event identifier.
-3. Accounts maps the external customer and commercial state to a stable Account.
-4. Accounts records the provider event without storing payment instruments.
-5. Accounts adds, changes, or revokes named entitlements according to accepted product policy.
-6. Connected products observe the new entitlement through API reads or future events.
-
-Stripe owns checkout, subscriptions, invoices, refunds, and the customer billing portal. Accounts owns the mapping from Stripe customers and commercial state to stable Accounts identities and named product entitlements.
-
-## Publish a legal or compliance document
-
-1. The responsible owner supplies approved document content, version, and effective date.
-2. The document entry is updated without changing its stable public slug.
-3. The publication flag is enabled only for the approved version.
-4. The trust center links the published document and exposes its metadata.
-5. Connected products link to the Accounts URL instead of copying the content.
+1. The authenticated product sends opaque account ID, product key, and entitlement name.
+2. Zahir denies suspended accounts and inactive products.
+3. Zahir evaluates non-revoked grants within their validity interval.
+4. Zahir returns the provider-neutral decision; the product applies its own authorization and onboarding policy.
