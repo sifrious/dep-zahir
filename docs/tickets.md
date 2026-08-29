@@ -54,8 +54,9 @@ The `3A` tickets are independent after baseline CI and may run in parallel. ZAHI
 | ZAHIR-010 | Complete | Client `53ed57e`, host `5213c80`; 12 tests/43 assertions, migrations/rollback, Pint, and audits pass; live smoke remains externally gated |
 | ZAHIR-012 | Complete | `logres-site` `0765357`; 18 tests/53 assertions, Pint, and audit pass across allow/deny/suspend/unknown/timeout/stale/mismatch cases |
 | ZAHIR-013 | Complete | Zahir `76833e2`, host `ae4d57f`; structured redaction tests pass with 26 tests/104 assertions and 18 tests/54 assertions |
-| ZAHIR-014B | In progress | Backup prerequisites, restore verification, release manifests, migration rehearsal, and rollback gates |
-| ZAHIR-018A onward | Not started | Waiting on implementation sequence |
+| ZAHIR-014B | Complete | `352a994`; local rehearsal and GitHub CI run `33236125152` passed backup/restore counts, rollback/forward migration, manifest artifact, tests, scans, and audits |
+| ZAHIR-018A | In progress | Pre-production threat review, outage/compromise runbooks, and remediation evidence |
+| ZAHIR-015 onward | Not started | Waiting on implementation sequence |
 
 ## Wave 2 — deterministic integration
 
