@@ -1,5 +1,9 @@
 # Zahir
 
+> **License:** Copyright © 2026 Sifrious. All rights reserved. This is
+> publicly viewable proprietary software, not open-source software. See
+> [LICENSE.md](LICENSE.md).
+
 Zahir is the provider-neutral global account and product-entitlement boundary shared by portfolio applications.
 
 ```text
