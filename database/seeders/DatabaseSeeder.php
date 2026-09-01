@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LogresProductSeeder::class,
             BurdgenProductSeeder::class,
+            MaryWinProductSeeder::class,
         ]);
     }
 }

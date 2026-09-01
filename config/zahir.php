@@ -23,6 +23,15 @@ return [
             'development_account_id' => 'acc_01j6g000000000000000000000',
             'seed_reference' => 'zahir-011-v1',
         ],
+        'mary-win' => [
+            'name' => 'mary.win',
+            'access_entitlement' => 'access',
+            'production_grant_policy' => 'deny_until_launch_policy_approved',
+            'grant_owner_role' => 'launch_access_administrator',
+            'revocation_source' => 'manual_invitation_registry',
+            'development_account_id' => 'acc_01j6g000000000000000000002',
+            'seed_reference' => 'mary-win-v1',
+        ],
         'burdgen' => [
             'name' => 'Burdgen',
             'access_entitlement' => 'access',
