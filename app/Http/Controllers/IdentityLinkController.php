@@ -27,7 +27,11 @@ final class IdentityLinkController extends Controller
         }
 
         return response()->json([
-            'account' => ['id' => $resolution->accountId, 'status' => $resolution->status],
+            'account' => [
+                'id' => $resolution->accountId,
+                'status' => $resolution->status,
+                'contact_email' => $resolution->contactEmail,
+            ],
             'outcome' => 'linked',
         ]);
     }

@@ -41,6 +41,10 @@ final class AccountResolutionController extends Controller
             'id' => $resolution->accountId,
             'status' => $resolution->status,
             'created' => $resolution->created,
+            // Metadata, not identity: the address to reach this account at,
+            // chosen across every linked identity rather than assumed from the
+            // one assertion this caller happens to hold.
+            'contact_email' => $resolution->contactEmail,
         ]]);
     }
 }

@@ -30,7 +30,7 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $identity->account_id, 'resolved', $caller);
 
-                return new AccountResolution($identity->account_id, $identity->account->status->value, false);
+                return new AccountResolution($identity->account_id, $identity->account->status->value, false, $identity->account->contactEmail());
             }
 
             $account = Account::query()->create();
@@ -45,12 +45,12 @@ final readonly class AccountResolver
                 $account->delete();
                 $this->audit($verified, $existing->account_id, 'resolved_after_race', $caller);
 
-                return new AccountResolution($existing->account_id, $existing->account->status->value, false);
+                return new AccountResolution($existing->account_id, $existing->account->status->value, false, $existing->account->contactEmail());
             }
 
             $this->audit($verified, $account->id, 'created', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, true);
+            return new AccountResolution($account->id, $account->status->value, true, $account->contactEmail());
         }, 3);
     }
 
@@ -83,13 +83,13 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $accountId, 'link_replayed', $caller);
 
-                return new AccountResolution($account->id, $account->status->value, false);
+                return new AccountResolution($account->id, $account->status->value, false, $account->fresh()?->contactEmail());
             }
 
             $this->createIdentity($account, $verified);
             $this->audit($verified, $accountId, 'linked', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, false);
+            return new AccountResolution($account->id, $account->status->value, false, $account->fresh()?->contactEmail());
         }, 3);
     }
 

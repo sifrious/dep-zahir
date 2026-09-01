@@ -29,7 +29,11 @@ Safe claims are limited to `email`, `email_verified`, and `name`. They are mutab
 
 The caller asserts that the identity passed the protocol checks in ADR-003. Zahir does not accept raw codes, tokens, provider sessions, or WorkOS objects.
 
-Response: `{"account":{"id":"acc_...","status":"active","created":true}}`.
+Response: `{"account":{"id":"acc_...","status":"active","created":true,"contact_email":"person@example.com"}}`.
+
+`contact_email` is the address to reach this account at, chosen across every linked identity rather than assumed from the assertion the caller happens to hold. It is metadata, never identity: resolution stays keyed on `(provider, provider_subject)`, equal emails still never merge, and the value may be null when no linked identity has asserted one.
+
+Precedence is the most recently authenticated identity — the one the person demonstrably still controls — falling back to the most recently linked for ties and for identities never yet used to sign in.
 
 ## Entitlement contract
 

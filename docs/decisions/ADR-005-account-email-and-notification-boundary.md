@@ -1,6 +1,8 @@
 # ADR-005: Where account email and notifications belong
 
-Status: **proposed** — needs an accountable decision before any of it is built
+Status: **accepted** for the boundary and the contact address. Lifecycle
+notification remains **deferred** to its own ticket — accepting where it belongs
+is not the same as accepting that it should be built now.
 
 ## Context
 
@@ -12,7 +14,7 @@ is the one place that knows who someone is across products.
 "Signups, confirmations, logging, and notifications" is four different concerns
 wearing one coat. They do not have the same answer.
 
-## Decision (proposed)
+## Decision
 
 Split them by who owns the thing being described.
 
@@ -61,7 +63,10 @@ what they render, under their own prefixes. Nothing here needs consolidating; a
 combined log would mean Zahir receiving product context it has no business
 holding.
 
-## The smaller thing that would serve most of this
+## The contact address — built
+
+Implemented rather than left as advice, since it was the smallest thing that
+served most of the need.
 
 Zahir already stores `email` as an allowlisted claim, refreshed on every
 resolution, so it already holds the authoritative address. What it lacks is a way
@@ -74,8 +79,17 @@ unblocks any product or operator that needs to reach a person. It does not make
 email identity: resolution stays keyed on `(provider, provider_subject)`, equal
 emails still never merge, and the field stays mutable metadata.
 
-That is the recommended first step, and it can be decided independently of
-whether Zahir ever sends mail.
+`account.contact_email` is now on the resolution and linking responses, and on
+`AccountReference` in the client. Precedence is the most recently authenticated
+identity — the one the person demonstrably still controls — falling back to the
+most recently linked for ties and for identities never used to sign in. Null is
+a real answer; an identity may assert no address, and inventing one would be
+worse than saying so.
+
+This settles open question 1 below. It changes nothing about identity:
+resolution stays keyed on `(provider, provider_subject)`, equal emails still
+never merge, and a changed address still resolves the same account — all
+asserted in `AccountContactAddressTest`.
 
 ## Consequences if accepted
 
@@ -86,12 +100,12 @@ whether Zahir ever sends mail.
 - A product that needs to email its own users keeps doing so with its own mailer
   and its own templates.
 
-## Open questions for the decision
+## Still open, for the deferred notification ticket
 
-1. Which identity supplies the contact address when an account has several —
-   most recently authenticated, first linked, or an explicit primary?
+1. ~~Which identity supplies the contact address when an account has several?~~
+   Settled: most recently authenticated, then most recently linked.
 2. Should lifecycle notification be Zahir sending mail, or Zahir emitting an
    event that products and operators subscribe to? The second keeps the mail
-   stack out of Zahir entirely.
+   stack out of Zahir entirely, and is the recommendation.
 3. Does a suspension notice come from Zahir or from the product that noticed?
    Sending from both is the failure mode.

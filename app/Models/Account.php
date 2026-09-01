@@ -29,6 +29,31 @@ class Account extends Model
         return $this->hasMany(EntitlementGrant::class);
     }
 
+    /**
+     * The address to reach this account at.
+     *
+     * An account may hold several linked identities, each asserting its own
+     * email, so "the account's address" needs a rule rather than a guess. The
+     * most recently authenticated identity wins: it is the one the person
+     * demonstrably still controls. Ties, and identities never yet used to sign
+     * in, fall back to the most recently linked.
+     *
+     * Null is a real answer. An identity may assert no email at all, and
+     * inventing one would be worse than saying so.
+     */
+    public function contactEmail(): ?string
+    {
+        $identity = $this->externalIdentities()
+            ->orderByRaw('last_authenticated_at IS NULL')
+            ->orderByDesc('last_authenticated_at')
+            ->orderByDesc('linked_at')
+            ->first();
+
+        $email = $identity?->verified_claims['email'] ?? null;
+
+        return is_string($email) && $email !== '' ? $email : null;
+    }
+
     protected static function booted(): void
     {
         static::creating(function (Account $account): void {
