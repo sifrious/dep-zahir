@@ -16,7 +16,12 @@ return new class extends Migration
 
         Schema::create('external_identities', function (Blueprint $table): void {
             $table->ulid('id')->primary();
-            $table->foreignUlid('account_id')->constrained()->cascadeOnDelete();
+            // Not foreignUlid: that is char(26), and an account ID is `acc_`
+            // plus a 26-character ULID — thirty characters. SQLite ignores
+            // declared lengths, so the four-character shortfall is invisible
+            // until the first insert on Postgres or MySQL.
+            $table->string('account_id', 30);
+            $table->foreign('account_id')->references('id')->on('accounts')->cascadeOnDelete();
             $table->string('provider', 64);
             $table->string('provider_subject', 512);
             $table->json('verified_claims');
@@ -37,7 +42,10 @@ return new class extends Migration
 
         Schema::create('entitlement_grants', function (Blueprint $table): void {
             $table->ulid('id')->primary();
-            $table->foreignUlid('account_id')->constrained()->cascadeOnDelete();
+            // Thirty characters, as above. `product_id` stays a foreignUlid
+            // because a product ID really is a bare ULID.
+            $table->string('account_id', 30);
+            $table->foreign('account_id')->references('id')->on('accounts')->cascadeOnDelete();
             $table->foreignUlid('product_id')->constrained()->cascadeOnDelete();
             $table->string('entitlement');
             $table->string('source');

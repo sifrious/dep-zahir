@@ -44,3 +44,52 @@ jobs:
         with:
           name: release-manifest
           path: release-manifest.json
+
+  # The suite's default engine is SQLite, which ignores declared column lengths
+  # entirely. A foreign key four characters too short for the only value it will
+  # ever hold therefore passes every test and every migration here, then fails
+  # on the first insert in production. This job runs the same suite against the
+  # engine the service actually deploys to, so that class of defect is caught
+  # before a deployment finds it.
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: zahir
+          POSTGRES_PASSWORD: zahir
+          POSTGRES_DB: zahir_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: zahir_test
+      DB_USERNAME: zahir
+      DB_PASSWORD: zahir
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: php artisan test --compact
+      - run: php artisan migrate:fresh --force && php artisan migrate:fresh --force
+      - name: Every account foreign key must hold a 30-character account ID
+        run: |
+          php artisan migrate:fresh --force
+          psql "postgresql://zahir:zahir@127.0.0.1:5432/zahir_test" -v ON_ERROR_STOP=1 -c "
+            INSERT INTO accounts (id, status, created_at, updated_at)
+              VALUES ('acc_01k6g000000000000000000000', 'active', now(), now());
+            INSERT INTO external_identities (id, account_id, provider, provider_subject, verified_claims, provenance, linked_at, created_at, updated_at)
+              VALUES ('01k6g00000000000000000000a', 'acc_01k6g000000000000000000000', 'workos', 'user_1', '{}', '{}', now(), now(), now());
+          "
