@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             LogresProductSeeder::class,
             BurdgenProductSeeder::class,
             MaryWinProductSeeder::class,
+            ClevernessProductSeeder::class,
         ]);
     }
 }

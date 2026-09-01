@@ -32,6 +32,15 @@ return [
             'development_account_id' => 'acc_01j6g000000000000000000002',
             'seed_reference' => 'mary-win-v1',
         ],
+        'cleverness' => [
+            'name' => 'Cleverness',
+            'access_entitlement' => 'access',
+            'production_grant_policy' => 'deny_until_launch_policy_approved',
+            'grant_owner_role' => 'launch_access_administrator',
+            'revocation_source' => 'manual_invitation_registry',
+            'development_account_id' => 'acc_01j6g000000000000000000003',
+            'seed_reference' => 'cleverness-v1',
+        ],
         'burdgen' => [
             'name' => 'Burdgen',
             'access_entitlement' => 'access',

@@ -7,6 +7,7 @@ use App\Models\EntitlementGrant;
 use App\Models\Product;
 use Carbon\CarbonImmutable;
 use Database\Seeders\BurdgenProductSeeder;
+use Database\Seeders\ClevernessProductSeeder;
 use Database\Seeders\LogresProductSeeder;
 use Database\Seeders\MaryWinProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -177,13 +178,14 @@ final class BurdgenProductEntitlementTest extends TestCase
     }
 
     /**
-     * A third product is where "per product" stops being a coincidence. Each
-     * pair must open exactly one door, in every direction.
+     * Every product against every other. Two passing in both directions could
+     * be an accident of ordering; the full matrix, where only the diagonal
+     * allows, is the property itself.
      */
-    public function test_three_products_stay_mutually_exclusive(): void
+    public function test_every_product_stays_mutually_exclusive(): void
     {
         $token = $this->serviceToken('caller');
-        $keys = ['logres', 'burdgen', 'mary-win'];
+        $keys = ['logres', 'burdgen', 'mary-win', 'cleverness'];
 
         $products = [];
         foreach ($keys as $key) {
@@ -226,10 +228,11 @@ final class BurdgenProductEntitlementTest extends TestCase
         $this->seed(LogresProductSeeder::class);
         $this->seed(BurdgenProductSeeder::class);
         $this->seed(MaryWinProductSeeder::class);
+        $this->seed(ClevernessProductSeeder::class);
 
-        $this->assertDatabaseCount('products', 3);
-        $this->assertDatabaseCount('entitlement_grants', 3);
+        $this->assertDatabaseCount('products', 4);
+        $this->assertDatabaseCount('entitlement_grants', 4);
         // Distinct accounts, so no product's fixture can mask a bug in another's.
-        $this->assertDatabaseCount('accounts', 3);
+        $this->assertDatabaseCount('accounts', 4);
     }
 }
