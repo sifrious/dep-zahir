@@ -29,7 +29,14 @@ final class IdentityUnlinkController extends Controller
                 $recoveryReference,
             );
         } catch (IdentityLinkRejected) {
-            return response()->json(['message' => 'Identity unlinking failed.'], 409);
+            // Removing the last usable identity is the only way unlink fails, so
+            // naming the reason tells a product nothing it does not already know
+            // about its own account — and without a stable code the caller can
+            // only guess whether to offer recovery or report a fault.
+            return response()->json([
+                'message' => 'Identity unlinking failed.',
+                'reason' => 'recovery_required',
+            ], 409);
         }
 
         return response()->json([

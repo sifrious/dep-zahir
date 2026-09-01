@@ -81,6 +81,53 @@ class ContractFixtureTest extends TestCase
         ])->assertStatus($fixtures['error.not_found']['response']['status']);
     }
 
+    public function test_recovery_contract_matches_v1_fixture(): void
+    {
+        $case = $this->fixtures()['cases']['error.recovery_required'];
+        $account = Account::query()->create();
+        $account->externalIdentities()->create([
+            'provider' => 'workos',
+            'provider_subject' => 'user_sole_identity',
+            'verified_claims' => [],
+            'provenance' => [],
+            'linked_at' => now(),
+        ]);
+
+        $this->withToken($this->token)
+            ->withHeader('X-Zahir-Current-Account', $account->id)
+            ->deleteJson("/api/v1/accounts/{$account->id}/identities", [
+                'provider' => 'workos',
+                'provider_subject' => 'user_sole_identity',
+            ])
+            ->assertStatus($case['response']['status'])
+            ->assertExactJson($case['response']['body']);
+    }
+
+    /**
+     * A fixture nobody asserts is documentation pretending to be a test. Freezing
+     * the case list means adding one is a deliberate edit here, which is the
+     * moment to also write the assertion that exercises it.
+     */
+    public function test_the_declared_fixture_case_list_is_frozen(): void
+    {
+        $cases = array_keys($this->fixtures()['cases']);
+        sort($cases);
+
+        $this->assertSame([
+            'account.resolve.success',
+            'entitlement.allow',
+            'entitlement.deny',
+            'error.authentication',
+            // Defence in depth: the unique index on (provider, provider_subject)
+            // makes an ambiguous resolve unreachable over HTTP, so this shape is
+            // asserted at the domain layer by AccountResolverTest instead.
+            'error.collision',
+            'error.not_found',
+            'error.recovery_required',
+            'error.validation',
+        ], $cases);
+    }
+
     /** @return array<string, mixed> */
     private function fixtures(): array
     {
