@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Accounts\ExternalIdentityLifecycle;
 use App\Http\Requests\ExternalIdentityLifecycleRequest;
 use Illuminate\Http\JsonResponse;
+use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleSignal;
+use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
 
 final class ExternalIdentityLifecycleController extends Controller
 {
@@ -24,7 +26,10 @@ final class ExternalIdentityLifecycleController extends Controller
 
         return response()->json([
             'account_id' => $result->accountId,
-            'authentication_state' => $result->authenticationState->value,
+            'identity_status' => $result->identityStatus->value,
+            'result' => $result->result,
+            'authentication_outcome' => LoginOutcomeType::ProviderFailed->value,
+            'authentication_reason' => AuthenticationLifecycleSignal::ProviderRevoked->value,
             'replayed' => $result->replayed,
         ]);
     }
@@ -46,7 +51,8 @@ final class ExternalIdentityLifecycleController extends Controller
 
         return response()->json([
             'account_id' => $result->accountId,
-            'authentication_state' => $result->authenticationState->value,
+            'identity_status' => $result->identityStatus->value,
+            'result' => $result->result,
             'replayed' => $result->replayed,
         ]);
     }

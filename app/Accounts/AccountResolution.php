@@ -2,7 +2,7 @@
 
 namespace App\Accounts;
 
-use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
+use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
 
 final readonly class AccountResolution
 {
@@ -10,6 +10,7 @@ final readonly class AccountResolution
         public string $accountId,
         public string $status,
         public bool $created,
-        public AuthenticationLifecycleState $authenticationState,
+        public LoginOutcomeType $authenticationOutcome,
+        public ?string $authenticationReason = null,
     ) {}
 }

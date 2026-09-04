@@ -53,7 +53,8 @@ verified recovery with `DELETE` on the same path. Both identify the connection
 only by `(provider, provider_subject)` and require a reason code. Recovery also
 requires an opaque accepted recovery reference; audit provenance stores its
 hash, not the reference. Resolution of a revoked connection returns the same
-account with `authentication_state: provider_revoked`, never a new account.
+account with `authentication_outcome: provider_failed` and
+`authentication_reason: provider_revoked`, never a new account.
 
 The provider owns recovery and verification. Zahir records only the
 provider-neutral lifecycle result. Products own local logout and session expiry,

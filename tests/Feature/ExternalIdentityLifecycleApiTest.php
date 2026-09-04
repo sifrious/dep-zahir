@@ -19,7 +19,7 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
         $accountId = $this->withToken($productToken)
             ->postJson('/api/v1/accounts/resolve', ['external' => $external])
             ->assertOk()
-            ->assertJsonPath('account.authentication_state', 'authenticated')
+            ->assertJsonPath('account.authentication_outcome', 'authenticated')
             ->json('account.id');
         $url = "/api/v1/accounts/{$accountId}/identities/revocation";
         $revocation = [
@@ -33,12 +33,15 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertOk()
             ->assertExactJson([
                 'account_id' => $accountId,
-                'authentication_state' => 'provider_revoked',
+                'identity_status' => 'revoked',
+                'result' => 'revoked',
+                'authentication_outcome' => 'provider_failed',
+                'authentication_reason' => 'provider_revoked',
                 'replayed' => false,
             ]);
         $this->withToken($lifecycleToken)->postJson($url, $revocation)
             ->assertOk()
-            ->assertJsonPath('authentication_state', 'provider_revoked')
+            ->assertJsonPath('authentication_outcome', 'provider_failed')
             ->assertJsonPath('replayed', true);
 
         $this->assertDatabaseHas('external_identities', [
@@ -62,7 +65,8 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('account.id', $accountId)
             ->assertJsonPath('account.created', false)
-            ->assertJsonPath('account.authentication_state', 'provider_revoked');
+            ->assertJsonPath('account.authentication_outcome', 'provider_failed')
+            ->assertJsonPath('account.authentication_reason', 'provider_revoked');
         $this->assertDatabaseCount('accounts', 1);
         $this->assertDatabaseCount('external_identities', 1);
 
@@ -77,7 +81,8 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertOk()
             ->assertExactJson([
                 'account_id' => $accountId,
-                'authentication_state' => 'recovered',
+                'identity_status' => 'active',
+                'result' => 'recovered',
                 'replayed' => false,
             ]);
         $this->withToken($lifecycleToken)->deleteJson($url, $recovery)
@@ -102,7 +107,8 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->postJson('/api/v1/accounts/resolve', ['external' => $external])
             ->assertOk()
             ->assertJsonPath('account.id', $accountId)
-            ->assertJsonPath('account.authentication_state', 'authenticated');
+            ->assertJsonPath('account.authentication_outcome', 'authenticated')
+            ->assertJsonPath('account.authentication_reason', null);
         $this->assertDatabaseCount('accounts', 1);
     }
 
@@ -124,7 +130,7 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('account.id', $accountId)
             ->assertJsonPath('account.status', 'suspended')
-            ->assertJsonPath('account.authentication_state', 'suspended');
+            ->assertJsonPath('account.authentication_outcome', 'suspended');
         $this->assertSame('suspended', Account::query()->findOrFail($accountId)->status->value);
     }
 

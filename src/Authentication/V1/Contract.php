@@ -475,7 +475,9 @@ final readonly class LogoutOutcome
 enum SessionInvalidationReason: string
 {
     case Logout = 'logout';
+    case SessionExpired = 'session_expired';
     case AccountSuspended = 'account_suspended';
+    case ProviderRevoked = 'provider_revoked';
     case EntitlementRevoked = 'entitlement_revoked';
     case ZahirInvalidated = 'zahir_invalidated';
 }

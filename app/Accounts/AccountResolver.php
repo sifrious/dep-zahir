@@ -9,7 +9,8 @@ use App\Models\ExternalIdentity;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
+use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleSignal;
+use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
 
 final readonly class AccountResolver
 {
@@ -35,7 +36,8 @@ final readonly class AccountResolver
                     $identity->account_id,
                     $identity->account->status->value,
                     false,
-                    $this->authenticationState($identity),
+                    $this->authenticationOutcome($identity),
+                    $this->authenticationReason($identity),
                 );
             }
 
@@ -55,7 +57,8 @@ final readonly class AccountResolver
                     $existing->account_id,
                     $existing->account->status->value,
                     false,
-                    $this->authenticationState($existing),
+                    $this->authenticationOutcome($existing),
+                    $this->authenticationReason($existing),
                 );
             }
 
@@ -65,7 +68,7 @@ final readonly class AccountResolver
                 $account->id,
                 $account->status->value,
                 true,
-                AuthenticationLifecycleState::Authenticated,
+                LoginOutcomeType::Authenticated,
             );
         }, 3);
     }
@@ -103,7 +106,8 @@ final readonly class AccountResolver
                     $account->id,
                     $account->status->value,
                     false,
-                    $this->authenticationState($identity),
+                    $this->authenticationOutcome($identity),
+                    $this->authenticationReason($identity),
                 );
             }
 
@@ -115,8 +119,8 @@ final readonly class AccountResolver
                 $account->status->value,
                 false,
                 $account->status === AccountStatus::Suspended
-                    ? AuthenticationLifecycleState::Suspended
-                    : AuthenticationLifecycleState::Authenticated,
+                    ? LoginOutcomeType::Suspended
+                    : LoginOutcomeType::Authenticated,
             );
         }, 3);
     }
@@ -175,15 +179,23 @@ final readonly class AccountResolver
         ]);
     }
 
-    private function authenticationState(ExternalIdentity $identity): AuthenticationLifecycleState
+    private function authenticationOutcome(ExternalIdentity $identity): LoginOutcomeType
     {
         if ($identity->account->status === AccountStatus::Suspended) {
-            return AuthenticationLifecycleState::Suspended;
+            return LoginOutcomeType::Suspended;
         }
 
         return $identity->status === ExternalIdentityStatus::Revoked
-            ? AuthenticationLifecycleState::ProviderRevoked
-            : AuthenticationLifecycleState::Authenticated;
+            ? LoginOutcomeType::ProviderFailed
+            : LoginOutcomeType::Authenticated;
+    }
+
+    private function authenticationReason(ExternalIdentity $identity): ?string
+    {
+        return $identity->account->status === AccountStatus::Active
+            && $identity->status === ExternalIdentityStatus::Revoked
+            ? AuthenticationLifecycleSignal::ProviderRevoked->value
+            : null;
     }
 
     private function audit(VerifiedExternal $verified, ?string $accountId, string $outcome, ?string $caller): void

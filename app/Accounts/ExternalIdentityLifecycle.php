@@ -6,7 +6,6 @@ use App\Models\Account;
 use App\Models\ExternalIdentityLifecycleEvent;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
 
 final readonly class ExternalIdentityLifecycle
 {
@@ -100,9 +99,8 @@ final readonly class ExternalIdentityLifecycle
 
             return new ExternalIdentityLifecycleResult(
                 accountId: $identity->account_id,
-                authenticationState: $to === ExternalIdentityStatus::Revoked
-                    ? AuthenticationLifecycleState::ProviderRevoked
-                    : AuthenticationLifecycleState::Recovered,
+                identityStatus: $to,
+                result: $to === ExternalIdentityStatus::Revoked ? 'revoked' : 'recovered',
                 replayed: $from === $to,
             );
         }, 3);

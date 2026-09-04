@@ -2,113 +2,52 @@
   "version": "v1",
   "cases": {
     "local_logout": {
-      "from": "authenticated",
       "signal": "local_logout",
       "expected": {
-        "to": "logged_out",
-        "invalidates_local_session": true,
-        "next_action": "sign_in",
         "login_outcome": null,
-        "replayed": false
+        "session_invalidation_reason": "logout"
       }
     },
     "session_expired": {
-      "from": "authenticated",
       "signal": "session_expired",
       "expected": {
-        "to": "expired",
-        "invalidates_local_session": true,
-        "next_action": "sign_in",
         "login_outcome": "expired",
-        "replayed": false
+        "session_invalidation_reason": "session_expired"
       }
     },
     "account_suspended": {
-      "from": "authenticated",
       "signal": "account_suspended",
       "expected": {
-        "to": "suspended",
-        "invalidates_local_session": true,
-        "next_action": "contact_support",
         "login_outcome": "suspended",
-        "replayed": false
+        "session_invalidation_reason": "account_suspended"
       }
     },
     "provider_revoked": {
-      "from": "authenticated",
       "signal": "provider_revoked",
       "expected": {
-        "to": "provider_revoked",
-        "invalidates_local_session": true,
-        "next_action": "recover_external_identity",
         "login_outcome": "provider_failed",
-        "replayed": false
-      }
-    },
-    "provider_revocation_replayed": {
-      "from": "provider_revoked",
-      "signal": "provider_revoked",
-      "expected": {
-        "to": "provider_revoked",
-        "invalidates_local_session": true,
-        "next_action": "recover_external_identity",
-        "login_outcome": "provider_failed",
-        "replayed": true
-      }
-    },
-    "recovery_started": {
-      "from": "provider_revoked",
-      "signal": "recovery_started",
-      "expected": {
-        "to": "recovery_required",
-        "invalidates_local_session": false,
-        "next_action": "recover_external_identity",
-        "login_outcome": "provider_failed",
-        "replayed": false
-      }
-    },
-    "recovery_accepted": {
-      "from": "recovery_required",
-      "signal": "recovery_accepted",
-      "expected": {
-        "to": "recovered",
-        "invalidates_local_session": false,
-        "next_action": "none",
-        "login_outcome": null,
-        "replayed": false
-      }
-    },
-    "reauthenticated_after_recovery": {
-      "from": "recovered",
-      "signal": "reauthenticated",
-      "expected": {
-        "to": "authenticated",
-        "invalidates_local_session": false,
-        "next_action": "none",
-        "login_outcome": "authenticated",
-        "replayed": false
+        "session_invalidation_reason": "provider_revoked"
       }
     },
     "entitlement_revoked": {
-      "from": "authenticated",
       "signal": "entitlement_revoked",
       "expected": {
-        "to": "entitlement_revoked",
-        "invalidates_local_session": true,
-        "next_action": "contact_support",
         "login_outcome": "unauthorized_product",
-        "replayed": false
+        "session_invalidation_reason": "entitlement_revoked"
+      }
+    },
+    "recovery_accepted": {
+      "signal": "recovery_accepted",
+      "expected": {
+        "login_outcome": null,
+        "session_invalidation_reason": null
       }
     },
     "zahir_unavailable": {
-      "from": "logged_out",
       "signal": "zahir_unavailable",
       "expected": {
-        "to": "zahir_unavailable",
-        "invalidates_local_session": false,
-        "next_action": "retry",
         "login_outcome": "zahir_unavailable",
-        "replayed": false
+        "session_invalidation_reason": null
       }
     }
   }

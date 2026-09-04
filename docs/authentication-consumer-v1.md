@@ -177,34 +177,35 @@ account owns an external identity or reveal signing internals.
 
 ## Authentication lifecycle transitions
 
-`AuthenticationLifecycle` defines the consumer-observed states
-`authenticated`, `logged_out`, `expired`, `suspended`, `provider_revoked`,
-`entitlement_revoked`, `recovery_required`, `recovered`, and
-`zahir_unavailable`. These are not all global account statuses:
+`AuthenticationLifecycle` maps lifecycle signals onto the frozen
+`LoginOutcomeType` values and the existing `SessionInvalidation` contract. It
+does not define another identity or outcome hierarchy:
 
-- logout and session expiry invalidate a product-owned local session;
-- suspension is a Zahir global-account state;
+- logout and session expiry emit session invalidations for the sole
+  `GlobalAccountIdentity`;
+- suspension maps to `suspended` and emits an account-suspension invalidation;
 - provider revocation is recorded against the provider-neutral external
-  connection identified only by `(provider, provider_subject)`;
-- entitlement revocation remains a product-access decision;
+  connection identified only by `(provider, provider_subject)`, maps to
+  `provider_failed`, and emits a provider-revocation invalidation;
+- entitlement revocation maps to `unauthorized_product` and remains a
+  product-access decision;
 - recovery is performed and verified by the external provider, then accepted
   by a lifecycle-authorized Zahir caller using an opaque recovery reference;
-- Zahir unavailability is an observed availability outcome and does not itself
-  revoke or extend a local session.
+- Zahir unavailability maps to `zahir_unavailable` and does not itself emit a
+  session invalidation, revoke, or extend a local session.
 
-Each transition declares whether the product must invalidate its local session
-and one portable next action: sign in, retry, recover the external identity, or
-contact support. Replaying a completed transition is explicit and does not
-create another global account or local session. The deterministic transition
-cases are in `contracts/v1/authentication-lifecycle-fixtures.json`.
+Products use those outcomes for sign-in, retry, recovery, or support actions.
+Replaying a completed identity operation is explicit and does not create
+another global account or local session. The deterministic mappings are in
+`contracts/v1/authentication-lifecycle-fixtures.json`.
 
 Lifecycle-authorized callers record provider revocation with
 `POST /api/v1/accounts/{account}/identities/revocation` and accept externally
 verified recovery with `DELETE` on the same path. Recovery requires
 `accepted_recovery_reference`; Zahir stores only its hash in audit provenance.
 Account resolution continues to return the original opaque account and adds
-`account.authentication_state`, so a revoked identity cannot fall through to
-account creation.
+the frozen `account.authentication_outcome` plus a provider-neutral reason, so
+a revoked identity cannot fall through to account creation.
 
 ## Laravel integration seam
 
