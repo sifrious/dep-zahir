@@ -29,6 +29,29 @@ Products must make separate fail-closed authorization decisions.
 Email and name are mutable profile metadata. They are never subjects, identity
 keys, or account-linking inputs.
 
+## Frozen Wave 1 vocabulary
+
+The following names are the v1 public seam. Dependent work uses these types
+directly and must not introduce parallel account, identity, entitlement, or
+session-outcome objects. Changes within v1 are additive and backward compatible.
+
+| Concern | Frozen PHP names | Stable value or key |
+| --- | --- | --- |
+| Begin authentication | `AuthenticationConsumer::begin(StartAuthentication): PendingAuthentication` | product, return URI, state, nonce, expiry, authorization URI |
+| Callback input/result | `AuthenticationCallback`, `AuthenticationConsumer::complete()`, `VerifiedCallbackResult`, `VerifiedCallbackConsumer::consume()` | verified claims plus provider-neutral external connection |
+| Global account | `GlobalAccountIdentity`, `GlobalAccountResolver`, `GlobalAccountResolution`, `GlobalAccountStatus` | `GlobalAccountIdentity::$accountId` (`acc_…`); status `active` or `suspended` |
+| Product account projection | `ProductAccountProjection` | unique product-local projection keyed by `ProductAccountProjection::$globalAccount->accountId` |
+| Product-local session | `ProductSessionIdentity` | local session ID referencing one product projection |
+| Entitlement read | `ProductEntitlementReader::read()`, `ProductEntitlementDecision`, `ProductEntitlementStatus` | `active`, `absent`, `revoked`, `expired`, `product_inactive` |
+| Logout | `AuthenticationConsumer::logout(LogoutRequest): LogoutOutcome` | mandatory local invalidation; optional global logout request/redirect |
+| Session invalidation | `SessionInvalidation`, `SessionInvalidationReason`, `SessionInvalidationConsumer::invalidate()` | `logout`, `account_suspended`, `entitlement_revoked`, `zahir_invalidated` |
+| Login outcome | `LoginOutcome`, `LoginOutcomeType` | `authenticated`, `unauthorized_product`, `canceled`, `expired`, `suspended`, `provider_failed`, `zahir_unavailable` |
+
+`GlobalAccountIdentity` is the sole public global-account identity object.
+Provider revocation, session expiry, recovery, and delivery-ledger state do not
+create alternate account identifiers or broaden `GlobalAccountStatus`; they
+compose around the account ID and typed outcomes above.
+
 ## Public PHP seams
 
 - `AuthenticationConsumer` begins authentication, completes the browser
