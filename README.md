@@ -18,6 +18,10 @@ Zahir owns opaque account IDs, external identity links, lifecycle status, produc
 - `POST /api/v1/accounts/resolve` accepts a provider-neutral `VerifiedExternal` representation.
 - `POST /api/v1/entitlements/decide` returns a deterministic allow/deny decision.
 - Both require a service bearer credential configured as `ZAHIR_SERVICE_TOKENS=logres:secret`.
+- [`Sifrious\Zahir\Authentication\V1`](docs/authentication-consumer-v1.md) is the
+  reusable product authentication contract. It keeps global accounts,
+  product-local sessions, external connections, runner enrollment, execution
+  authorization, and repository/workspace grants as separate concepts.
 
 WorkOS AuthKit is provider #1. Its types remain under `App\Identity\WorkOs`; public endpoints do not expose WorkOS objects.
 

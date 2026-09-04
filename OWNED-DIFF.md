@@ -23,3 +23,18 @@ TRIGGER: products must resolve accounts and query entitlements without storage c
 SEAM: versioned JSON endpoints protected by caller-specific bearer credentials.
 
 REVISIT: replace static service credentials with signed workload identity when deployment infrastructure supplies it.
+
+## Authentication consumer contract — 2026-09-04, MME-1823
+
+TRIGGER: Burdgeon and later products need one versioned Zahir login seam without
+provider SDK or authorization coupling.
+
+SEAM: `Sifrious\Zahir\Authentication\V1`, deterministic v1 fixtures, and the
+Laravel adoption contract.
+
+BOUNDARY: authenticated login includes global account and product entitlement
+only. Runner enrollment, execution permission, and repository/workspace grants
+remain separate product-owned decisions.
+
+REVISIT: add deployment-configured issuer/key URLs and redacted live evidence
+without changing the v1 public types.
