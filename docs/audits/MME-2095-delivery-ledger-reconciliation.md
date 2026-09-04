@@ -1,8 +1,8 @@
 # MME-2095 — Zahir delivery-ledger reconciliation
 
-Audit timestamp: 2026-09-04 13:15 UTC
+Audit timestamp: 2026-09-04 13:23 UTC
 
-Repository baseline: [`sifrious/dep-zahir@2e44d08`](https://github.com/sifrious/dep-zahir/commit/2e44d08645103302f10734356f302be3c2f9c99b)
+Repository baseline: [`sifrious/dep-zahir@a44b062`](https://github.com/sifrious/dep-zahir/commit/a44b0624e33c1e07993fb4f26c2cbbf4f0ab4ff0)
 
 Linear source: [MME-2095](https://linear.app/sifirous/issue/MME-2095/audit-reconcile-linear-status-aliases-and-the-zahir-repository)
 
@@ -10,13 +10,13 @@ Linear source: [MME-2095](https://linear.app/sifirous/issue/MME-2095/audit-recon
 
 This is an evidence reconciliation, not a launch approval. It does not close or relax any production, WorkOS, infrastructure, signup, security, or human sign-off gate.
 
-The repository-local account, entitlement, service-authentication, lifecycle, observability, CI, and release-rehearsal work is merged. Deterministic WorkOS and Logres behavior is fixture-proven to the extent recorded below. No evidence found in the audited repositories or Linear proves a live WorkOS callback, exact registered production URLs, deployed Zahir infrastructure, production backup/log controls, or the deployed WorkOS → Zahir → Logres path.
+The repository-local account, entitlement, service-authentication, lifecycle, observability, CI, release-rehearsal, and provider-neutral authentication consumer contract work is merged. Deterministic WorkOS and Logres behavior is fixture-proven to the extent recorded below. No evidence found in the audited repositories or Linear proves a live WorkOS callback, exact registered production URLs, deployed Zahir infrastructure, production backup/log controls, or the deployed WorkOS → Zahir → Logres path.
 
 The principal reconciliation defects are:
 
 1. bare `ZAHIR-###` aliases are ambiguous after `ZAHIR-003`;
 2. repository status for the pre-deployment review predates the completed MME-2096 acceptance decision;
-3. three Linear blocker edges still point to completed human-decision tickets;
+3. six Linear blocker edges point to completed tickets;
 4. MME-1825 is missing two dependencies required by its own acceptance criteria;
 5. MME-2102 has substantial unmerged work on a remote branch but no pull request;
 6. the Burdgen PR #68 evidence link cannot be resolved in the currently accessible GitHub organization;
@@ -35,6 +35,18 @@ Examples:
 - `dep-zahir ledger/ZAHIR-012` means Logres entitlement enforcement.
 
 This qualification is necessary because Linear explicitly retains legacy `ZAHIR-008`, `ZAHIR-010`, `ZAHIR-011`, and `ZAHIR-012` references for MME-1536 and MME-1823–1825, while `docs/tickets.md` assigns those aliases to different outcomes.
+
+### Frozen Wave 1 consumer vocabulary
+
+All downstream consumers must use the contract merged by MME-1823 at `a44b062`; this audit defines no competing identity or authentication objects:
+
+- begin with `StartAuthentication`, receive `PendingAuthentication`, and call `AuthenticationConsumer::begin()`;
+- consume `AuthenticationCallback` as `VerifiedCallbackResult`;
+- project through `ProductAccountProjection::$globalAccount->accountId`;
+- use `GlobalAccountIdentity` as the sole public global-account identity;
+- call `ProductEntitlementReader::read()` and consume `ProductEntitlementDecision`;
+- use `LogoutOutcome` and `SessionInvalidation` for logout/session behavior;
+- preserve outcomes `authenticated`, `unauthorized_product`, `canceled`, `expired`, `suspended`, `provider_failed`, and `zahir_unavailable`.
 
 ## Implemented and merged
 
@@ -55,8 +67,9 @@ These are implementation or operational-control changes reachable from `main`, n
 | `dep-zahir ledger/ZAHIR-013` | [`76833e2`](https://github.com/sifrious/dep-zahir/commit/76833e2d05a26b23d0c85795ba75f1d3c4eaf2f7), [CI run 33236044343](https://github.com/sifrious/dep-zahir/actions/runs/33236044343) | Merged redacted observability/audit behavior |
 | `dep-zahir ledger/ZAHIR-014B` | [`352a994`](https://github.com/sifrious/dep-zahir/commit/352a994730a72269e06c93fb5cf8b73c861b1e70), [CI run 33236125152](https://github.com/sifrious/dep-zahir/actions/runs/33236125152) | Merged SQLite backup/restore and migration rehearsal plus manifest generation |
 | Repository portion of `dep-zahir ledger/ZAHIR-018A` | [`6a8df97`](https://github.com/sifrious/dep-zahir/commit/6a8df976b3c8de7294034145e7a20fd426400658), [CI run 33236293444](https://github.com/sifrious/dep-zahir/actions/runs/33236293444) | Threat review merged; no high finding remains unresolved |
+| [MME-1823](https://linear.app/sifirous/issue/MME-1823/publish-the-reusable-product-authentication-consumer-contract) | [`a44b062`](https://github.com/sifrious/dep-zahir/commit/a44b0624e33c1e07993fb4f26c2cbbf4f0ab4ff0), merged [`dep-zahir#3`](https://github.com/sifrious/dep-zahir/pull/3), successful [CI run 33877020770](https://github.com/sifrious/dep-zahir/actions/runs/33877020770) | Merged frozen Wave 1 provider-neutral consumer contract and deterministic fixtures; Linear is Done |
 
-The GitHub history shows these changes were pushed directly to `main`; `dep-zahir` has no merged pull requests as of the audit timestamp.
+The earlier ledger changes were pushed directly to `main`. MME-1823 is the first merged delivery pull request found in `dep-zahir`.
 
 ### `dep-accounts-client` main
 
@@ -84,9 +97,8 @@ The client has tags [`v0.0.1`](https://github.com/sifrious/dep-accounts-client/r
 
 | Ticket | Evidence | Audit disposition |
 |---|---|---|
-| [MME-1823](https://linear.app/sifirous/issue/MME-1823/publish-the-reusable-product-authentication-consumer-contract) | Ready-for-review [`dep-zahir#3`](https://github.com/sifrious/dep-zahir/pull/3), head `5c6a480`; 36 tests/126 assertions reported for the earlier revision; CI and CodeRabbit were still running on the current head at audit time | Implemented, reviewable, not merged. Do not treat blockers on MME-1823 as cleared until merge and successful CI. |
 | [MME-1530](https://linear.app/sifirous/issue/MME-1530/implement-logout-expiration-suspension-and-recovery-states) | Commit [`08f7c4c`](https://github.com/sifrious/dep-zahir/commit/08f7c4c1a5881e0ebb7792ca5213678e5d10a653) on the MME-2102 remote branch adds stable lifecycle outcomes and fail-closed tests | Partial implementation only. It is unmerged and does not cover MME-1530's complete product-local session, provider-revocation, responsive UI, or accessibility scope. |
-| [MME-2102](https://linear.app/sifirous/issue/MME-2102/define-provision-and-govern-the-burdgen-product-entitlement-for-shared) | Remote branch `mmebyte/mme-2102-define-provision-and-govern-the-burdgen-product-entitlement`, seven commits `08f7c4c..20a9704`, including `958015f` “Define and provision the Burdgen product entitlement”; 28 files, +1196/-50 versus main | Substantial implementation exists, but no GitHub PR or branch CI evidence was found. The branch also contains lifecycle, email/notification, and other product entitlement work beyond MME-2102; it needs scope review before merge. |
+| [MME-2102](https://linear.app/sifirous/issue/MME-2102/define-provision-and-govern-the-burdgen-product-entitlement-for-shared) | Remote branch `mmebyte/mme-2102-define-provision-and-govern-the-burdgen-product-entitlement`, seven commits `08f7c4c..20a9704`, including `958015f` “Define and provision the Burdgen product entitlement”; 28 files, +1196/-50 against its pre-MME-1823 base | Substantial implementation exists, but no GitHub PR or branch CI evidence was found. The branch also contains lifecycle, email/notification, and other product entitlement work beyond MME-2102; it must rebase onto `a44b062`, reuse the frozen Wave 1 types, and receive scope review before merge. |
 
 Open Dependabot PRs [`#1`](https://github.com/sifrious/dep-zahir/pull/1) and [`#2`](https://github.com/sifrious/dep-zahir/pull/2) are maintenance updates and are not delivery evidence for MME-2095.
 
@@ -104,7 +116,7 @@ Open Dependabot PRs [`#1`](https://github.com/sifrious/dep-zahir/pull/1) and [`#
 | Safe audit/observability fields | `76833e2`, redaction tests | No production log sink, access, retention, or deletion proof |
 | Backup/restore and migration rollback | [CI run 33236125152](https://github.com/sifrious/dep-zahir/actions/runs/33236125152) | SQLite file-copy rehearsal, not encrypted production-engine backup/restore |
 | Release manifest shape | `bin/release-manifest`, CI artifact generation | `dep-zahir` has no tag/release; artifact generation is not deployment |
-| MME-1823 consumer contract | PR #3 fixtures and reported local test suite | Unmerged and not second-consumer proof |
+| MME-1823 consumer contract | Merged PR #3 fixtures and successful CI | Provider-neutral deterministic proof; still not live WorkOS or second-consumer proof |
 
 The repository ledger also names Logres-host commits `0184855`, `8376fea`, `5213c80`, `0765357`, and `ae4d57f`. The referenced `sifrious/logres-site` repository and those commits were not resolvable with current GitHub access, and commit search did not locate them elsewhere in `sifrious`. Treat those ledger statements as recorded evidence, not independently reverified GitHub evidence.
 
@@ -169,6 +181,9 @@ This audit does not recommend manufacturing ten replacement tickets automaticall
 | MME-2098 | blocked by MME-2096 | MME-2096 is Done | Remove this edge. Keep MME-2098 open/blocked on its actual infrastructure authority and incomplete M-03 controls; connect MME-3887. |
 | MME-2099 | blocked by MME-2096 | MME-2096 is Done | Remove this edge. Keep MME-2099 open/blocked on WorkOS administration and live configuration; connect MME-3885 as appropriate. |
 | MME-2100 | blocked by MME-2097 | MME-2097 is Done | Remove this edge. Require deployment configuration evidence for the accepted policy without reopening the completed decision. |
+| MME-1824 | blocked by MME-1823 | MME-1823 is Done | Remove the completed edge; keep MME-1824 blocked by incomplete MME-1536. |
+| MME-1825 | blocked by MME-1823 | MME-1823 is Done | Remove the completed edge; add the actual incomplete MME-1824 and MME-2102 dependencies. |
+| MME-3228 | blocked by MME-1823 | MME-1823 is Done | Remove the completed edge; keep MME-3228 blocked by incomplete MME-1824. |
 
 The prose in MME-2098 and MME-2099 also still says “Current blocker: MME-2096” and should be updated when the relations are reconciled.
 
@@ -176,15 +191,13 @@ The prose in MME-2098 and MME-2099 also still says “Current blocker: MME-2096�
 
 | Ticket | Missing relationship |
 |---|---|
-| MME-1825 | Its criteria require the shared conformance suite and Burdgen entitlement contract, but Linear `blockedBy` contains only MME-1823. Add MME-1824 and MME-2102. |
+| MME-1825 | Its criteria require the shared conformance suite and Burdgen entitlement contract, but its only current blocker is completed MME-1823. Replace that stale edge with MME-1824 and MME-2102. |
 | MME-2102 | It is only `relatedTo` MME-1825 even though MME-1825 cannot prove product-specific entitlement isolation without it. Make it block MME-1825. |
 | MME-3885–3887 | Their descriptions gate broader signup, but they block no ticket. Connect them to the explicit broader-signup gate when that gate is identified; do not silently overload the narrower Logres go/no-go. |
 
 The remaining reviewed blocker edges are internally consistent:
 
 - MME-1536 remains blocked by incomplete MME-1530 and MME-1535.
-- MME-1824 remains blocked by MME-1823 and MME-1536.
-- MME-3228 remains blocked by MME-1823 and MME-1824.
 - MME-2101 remains blocked by MME-2100.
 
 ## Release and provenance audit
@@ -194,25 +207,24 @@ The remaining reviewed blocker edges are internally consistent:
 - `dep-zahir` CI emits a `release-manifest` artifact, but artifact generation does not establish a deployed release.
 - `release/components.json` pins accounts-client `4400419` and Logres-host `ae4d57f`; `bin/release-manifest` adds the current Zahir SHA.
 - The accounts-client pin is independently verifiable. The Logres-host pin is not currently resolvable through GitHub.
-- The repository baseline CI is green at [run 33287477549](https://github.com/sifrious/dep-zahir/actions/runs/33287477549).
-- PR #3 is the only delivery PR found in `dep-zahir`; it remains open.
+- The pre-contract repository baseline CI is green at [run 33287477549](https://github.com/sifrious/dep-zahir/actions/runs/33287477549).
+- Merged PR #3 passed [CI run 33877020770](https://github.com/sifrious/dep-zahir/actions/runs/33877020770) at tip `5c6a480`; merge commit `a44b062` is current `main`.
 - GitHub reports no branch-protection ruleset on `main`. Code-scanning and secret-scanning alert APIs returned 403, so this audit cannot use those APIs to assert that no alerts exist.
 
 ## Recommended reconciliation actions
 
 These are audit recommendations, not actions performed by this report:
 
-1. Remove the three stale completed-ticket blocker edges listed above without changing the blocked production tickets to Done.
+1. Remove the six stale completed-ticket blocker edges listed above without changing any remaining blocked production or implementation ticket to Done.
 2. Add MME-1824 and MME-2102 as blockers of MME-1825.
 3. Decide and record the single broader-signup gate blocked by MME-3885–3887.
 4. Update `docs/tickets.md` so repository review completion, MME-2096 acceptance, and unresolved residual follow-ups are represented separately.
 5. Replace ambiguous aliases in Linear prose and repository handoffs with MME IDs or qualified ledger IDs.
 6. Repair or retire the inaccessible Burdgen PR #68 attachments.
-7. Merge or close PR #3 based on review/CI; do not pre-credit it as merged.
-8. Put the MME-2102 branch through a scoped PR and CI before changing MME-2102 status.
-9. Identify the current Logres host repository or mark its historical commit evidence as unavailable.
-10. Add explicit MME mappings for the ten repository-ledger gaps, reusing suitable tickets only when their scope and evidence are recorded precisely.
-11. Preserve MME-3885–3887, MME-2098–2101, and MME-1825 as open until their own evidence exists.
+7. Rebase the MME-2102 branch onto `a44b062`, reuse the frozen Wave 1 vocabulary, and put it through a scoped PR and CI before changing MME-2102 status.
+8. Identify the current Logres host repository or mark its historical commit evidence as unavailable.
+9. Add explicit MME mappings for the ten repository-ledger gaps, reusing suitable tickets only when their scope and evidence are recorded precisely.
+10. Preserve MME-3885–3887, MME-2098–2101, and MME-1825 as open until their own evidence exists.
 
 ## Status changes performed by this audit
 
