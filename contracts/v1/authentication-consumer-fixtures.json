@@ -1,0 +1,95 @@
+{
+  "contract": "sifrious.zahir.authentication-consumer",
+  "version": "v1",
+  "configuration": {
+    "allowed_issuers": ["urn:sifrious:zahir:fixture"],
+    "expected_audience": "burdgeon-fixture",
+    "expected_nonce": "nonce-fixture",
+    "now": "2026-09-04T12:00:00Z",
+    "clock_tolerance_seconds": 60
+  },
+  "cases": {
+    "successful_login": {
+      "assertion": {
+        "key_id": "key-v1",
+        "algorithm": "RS256",
+        "issuer": "urn:sifrious:zahir:fixture",
+        "audiences": ["burdgeon-fixture"],
+        "subject": "acc_01FIXTUREACCOUNT",
+        "issued_at": "2026-09-04T11:59:00Z",
+        "expires_at": "2026-09-04T12:04:00Z",
+        "nonce": "nonce-fixture",
+        "assertion_id": "assertion-success"
+      },
+      "keys": {"initial": ["key-v1"], "after_refresh": ["key-v1"]},
+      "expected": {"outcome": "authenticated"}
+    },
+    "wrong_audience": {
+      "from": "successful_login",
+      "override": {"audiences": ["another-product"]},
+      "expected": {"failure": "wrong_audience"}
+    },
+    "unknown_issuer": {
+      "from": "successful_login",
+      "override": {"issuer": "urn:unknown:issuer"},
+      "expected": {"failure": "unknown_issuer"}
+    },
+    "expired_token": {
+      "from": "successful_login",
+      "override": {
+        "issued_at": "2026-09-04T11:50:00Z",
+        "expires_at": "2026-09-04T11:58:59Z"
+      },
+      "expected": {"failure": "expired_token"}
+    },
+    "nonce_mismatch": {
+      "from": "successful_login",
+      "override": {"nonce": "wrong-nonce"},
+      "expected": {"failure": "nonce_mismatch"}
+    },
+    "unknown_signing_key": {
+      "from": "successful_login",
+      "override": {"key_id": "key-unknown"},
+      "keys": {"initial": ["key-v1"], "after_refresh": ["key-v1"]},
+      "expected": {"failure": "unknown_signing_key", "refreshes": 1}
+    },
+    "rotated_key": {
+      "from": "successful_login",
+      "override": {"key_id": "key-v2", "assertion_id": "assertion-rotated"},
+      "keys": {"initial": ["key-v1"], "after_refresh": ["key-v1", "key-v2"]},
+      "expected": {"outcome": "authenticated", "refreshes": 1}
+    },
+    "revoked_product_entitlement": {
+      "from": "successful_login",
+      "entitlement": {
+        "product": "burdgeon",
+        "name": "access",
+        "status": "revoked"
+      },
+      "expected": {
+        "outcome": "unauthorized_product",
+        "failure": "product_entitlement_revoked"
+      }
+    },
+    "authenticated_without_execution_authorization": {
+      "from": "successful_login",
+      "entitlement": {
+        "product": "burdgeon",
+        "name": "access",
+        "status": "active",
+        "grant_id": "grant-fixture"
+      },
+      "execution_authorization": {
+        "allowed": false,
+        "authorization_id": null,
+        "reason": "execution_not_authorized"
+      },
+      "repository_grants": [],
+      "workspace_grants": [],
+      "expected": {
+        "outcome": "authenticated",
+        "execution_allowed": false
+      }
+    }
+  }
+}
