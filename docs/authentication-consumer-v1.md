@@ -29,6 +29,25 @@ Products must make separate fail-closed authorization decisions.
 Email and name are mutable profile metadata. They are never subjects, identity
 keys, or account-linking inputs.
 
+## Public PHP seams
+
+- `AuthenticationConsumer` begins authentication, completes the browser
+  callback into a typed login outcome, and logs out.
+- `VerifiedCallbackResult` carries only verified Zahir claims and the
+  provider-neutral external connection; no provider credential or SDK type.
+- `GlobalAccountResolver` maps that result to an opaque account and explicit
+  active/suspended status.
+- `ProductEntitlementReader` returns an active, absent, revoked, expired, or
+  inactive-product decision. Only an active decision may expose a grant ID.
+- `VerifiedCallbackConsumer` composes callback verification, account
+  resolution, and entitlement evaluation into the explicit login outcomes.
+- `SessionInvalidationConsumer` idempotently invalidates product-local sessions
+  for logout, account suspension, entitlement revocation, or Zahir invalidation.
+
+These are transport- and storage-independent interfaces. A consumer receives
+values and decisions, never Eloquent models, table identifiers, database
+connections, or Logres-specific classes.
+
 ## Start, callback, and session lifecycle
 
 `AuthenticationConsumer::begin()` accepts a product key and allowlisted return
@@ -49,9 +68,10 @@ pending record before creating a product session:
 6. Require an active account and active product entitlement.
 7. Rotate the product-local session ID and persist only the minimum projection.
 
-The minimum projection is the Zahir account ID plus product-owned identifiers
-and timestamps needed by the product. Provider subjects, provider credentials,
-raw assertions, authorization codes, and signing keys are not product account
+The minimum `ProductAccountProjection` is the Zahir account ID plus the
+product-owned local user ID and product key. `ProductSessionIdentity` references
+that projection separately. Provider subjects, provider credentials, raw
+assertions, authorization codes, and signing keys are not product account
 columns.
 
 `AuthenticationConsumer::logout()` always invalidates the product-local

@@ -96,21 +96,27 @@ final readonly class GlobalAccountIdentity
     }
 }
 
-final readonly class ProductLocalIdentity
+final readonly class ProductAccountProjection
 {
     public function __construct(
         public string $product,
         public string $localUserId,
-        public string $localSessionId,
         public GlobalAccountIdentity $globalAccount,
     ) {
-        self::requireValues($product, $localUserId, $localSessionId);
+        if ($product === '' || $localUserId === '') {
+            throw new InvalidArgumentException('Product and local user ID are required.');
+        }
     }
+}
 
-    private static function requireValues(string ...$values): void
-    {
-        if (in_array('', $values, true)) {
-            throw new InvalidArgumentException('Product, local user, and local session IDs are required.');
+final readonly class ProductSessionIdentity
+{
+    public function __construct(
+        public string $localSessionId,
+        public ProductAccountProjection $account,
+    ) {
+        if ($localSessionId === '') {
+            throw new InvalidArgumentException('A product-local session ID is required.');
         }
     }
 }
@@ -186,6 +192,58 @@ final readonly class ProductEntitlement
     }
 }
 
+enum GlobalAccountStatus: string
+{
+    case Active = 'active';
+    case Suspended = 'suspended';
+}
+
+final readonly class GlobalAccountResolution
+{
+    public function __construct(
+        public GlobalAccountIdentity $account,
+        public GlobalAccountStatus $status,
+        public bool $created,
+    ) {}
+}
+
+enum ProductEntitlementStatus: string
+{
+    case Active = 'active';
+    case Absent = 'absent';
+    case Revoked = 'revoked';
+    case Expired = 'expired';
+    case ProductInactive = 'product_inactive';
+}
+
+final readonly class ProductEntitlementDecision
+{
+    public function __construct(
+        public GlobalAccountIdentity $account,
+        public string $product,
+        public string $entitlement,
+        public ProductEntitlementStatus $status,
+        public ?string $grantId,
+    ) {
+        if ($product === '' || $entitlement === '') {
+            throw new InvalidArgumentException('Product and entitlement are required.');
+        }
+
+        if ($status === ProductEntitlementStatus::Active && ($grantId === null || $grantId === '')) {
+            throw new InvalidArgumentException('An active entitlement requires a grant ID.');
+        }
+
+        if ($status !== ProductEntitlementStatus::Active && $grantId !== null) {
+            throw new InvalidArgumentException('A denied entitlement cannot expose a grant ID.');
+        }
+    }
+
+    public function allowed(): bool
+    {
+        return $this->status === ProductEntitlementStatus::Active;
+    }
+}
+
 final readonly class AssertionClaims
 {
     /**
@@ -215,6 +273,37 @@ final readonly class AssertionClaims
             throw new InvalidArgumentException('Assertion expiry must be after its issue time.');
         }
     }
+}
+
+final readonly class VerifiedCallbackResult
+{
+    public function __construct(
+        public AssertionClaims $claims,
+        public ExternalProviderConnection $externalConnection,
+    ) {}
+}
+
+interface GlobalAccountResolver
+{
+    public function resolve(VerifiedCallbackResult $callback): GlobalAccountResolution;
+}
+
+interface ProductEntitlementReader
+{
+    public function read(
+        GlobalAccountIdentity $account,
+        string $product,
+        string $entitlement,
+    ): ProductEntitlementDecision;
+}
+
+interface VerifiedCallbackConsumer
+{
+    /**
+     * Resolves the global account, evaluates product access, and returns one of
+     * the explicit login outcomes without creating product-domain authorization.
+     */
+    public function consume(VerifiedCallbackResult $callback): LoginOutcome;
 }
 
 final readonly class DecodedAssertion
@@ -381,6 +470,37 @@ final readonly class LogoutOutcome
         public bool $globalLogoutRequested,
         public ?string $redirectUri,
     ) {}
+}
+
+enum SessionInvalidationReason: string
+{
+    case Logout = 'logout';
+    case AccountSuspended = 'account_suspended';
+    case EntitlementRevoked = 'entitlement_revoked';
+    case ZahirInvalidated = 'zahir_invalidated';
+}
+
+final readonly class SessionInvalidation
+{
+    public function __construct(
+        public GlobalAccountIdentity $globalAccount,
+        public string $product,
+        public SessionInvalidationReason $reason,
+        public DateTimeImmutable $occurredAt,
+    ) {
+        if ($product === '') {
+            throw new InvalidArgumentException('Product is required for session invalidation.');
+        }
+    }
+}
+
+interface SessionInvalidationConsumer
+{
+    /**
+     * Returns the number of product-local sessions invalidated. Implementations
+     * must be idempotent for repeated Zahir events.
+     */
+    public function invalidate(SessionInvalidation $invalidation): int;
 }
 
 interface AuthenticationConsumer

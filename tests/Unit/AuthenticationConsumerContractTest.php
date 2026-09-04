@@ -18,12 +18,24 @@ use Sifrious\Zahir\Authentication\V1\ExecutionAuthorization;
 use Sifrious\Zahir\Authentication\V1\ExternalProviderConnection;
 use Sifrious\Zahir\Authentication\V1\FailureCode;
 use Sifrious\Zahir\Authentication\V1\GlobalAccountIdentity;
+use Sifrious\Zahir\Authentication\V1\GlobalAccountResolution;
+use Sifrious\Zahir\Authentication\V1\GlobalAccountResolver;
+use Sifrious\Zahir\Authentication\V1\GlobalAccountStatus;
 use Sifrious\Zahir\Authentication\V1\LoginOutcome;
 use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
+use Sifrious\Zahir\Authentication\V1\ProductAccountProjection;
 use Sifrious\Zahir\Authentication\V1\ProductEntitlement;
+use Sifrious\Zahir\Authentication\V1\ProductEntitlementDecision;
+use Sifrious\Zahir\Authentication\V1\ProductEntitlementReader;
+use Sifrious\Zahir\Authentication\V1\ProductEntitlementStatus;
+use Sifrious\Zahir\Authentication\V1\ProductSessionIdentity;
+use Sifrious\Zahir\Authentication\V1\SessionInvalidation;
+use Sifrious\Zahir\Authentication\V1\SessionInvalidationConsumer;
+use Sifrious\Zahir\Authentication\V1\SessionInvalidationReason;
 use Sifrious\Zahir\Authentication\V1\SignatureVerifier;
 use Sifrious\Zahir\Authentication\V1\SigningKey;
 use Sifrious\Zahir\Authentication\V1\SigningKeyResolver;
+use Sifrious\Zahir\Authentication\V1\VerifiedCallbackResult;
 
 final class AuthenticationConsumerContractTest extends TestCase
 {
@@ -100,6 +112,76 @@ final class AuthenticationConsumerContractTest extends TestCase
         $this->assertArrayNotHasKey('executionAuthorization', get_object_vars($login));
         $this->assertArrayNotHasKey('repositoryGrants', get_object_vars($login));
         $this->assertArrayNotHasKey('workspaceGrants', get_object_vars($login));
+    }
+
+    public function test_verified_callback_resolves_account_and_reads_entitlement_through_public_seams(): void
+    {
+        [$claims] = $this->validateFixture('successful_login');
+        $callback = new VerifiedCallbackResult(
+            claims: $claims,
+            externalConnection: new ExternalProviderConnection('fixture-provider', 'external-subject'),
+        );
+        $resolver = new class implements GlobalAccountResolver
+        {
+            public function resolve(VerifiedCallbackResult $callback): GlobalAccountResolution
+            {
+                return new GlobalAccountResolution(
+                    account: new GlobalAccountIdentity($callback->claims->subject),
+                    status: GlobalAccountStatus::Active,
+                    created: false,
+                );
+            }
+        };
+        $entitlements = new class implements ProductEntitlementReader
+        {
+            public function read(
+                GlobalAccountIdentity $account,
+                string $product,
+                string $entitlement,
+            ): ProductEntitlementDecision {
+                return new ProductEntitlementDecision(
+                    account: $account,
+                    product: $product,
+                    entitlement: $entitlement,
+                    status: ProductEntitlementStatus::Active,
+                    grantId: 'grant-fixture',
+                );
+            }
+        };
+
+        $resolution = $resolver->resolve($callback);
+        $decision = $entitlements->read($resolution->account, 'burdgeon', 'access');
+
+        $this->assertSame(GlobalAccountStatus::Active, $resolution->status);
+        $this->assertTrue($decision->allowed());
+        $this->assertSame($claims->subject, $decision->account->accountId);
+    }
+
+    public function test_minimal_projection_and_session_invalidation_remain_product_owned(): void
+    {
+        $projection = new ProductAccountProjection(
+            product: 'burdgeon',
+            localUserId: 'user-local',
+            globalAccount: new GlobalAccountIdentity('acc_01FIXTUREACCOUNT'),
+        );
+        $session = new ProductSessionIdentity('session-local', $projection);
+        $consumer = new class implements SessionInvalidationConsumer
+        {
+            public function invalidate(SessionInvalidation $invalidation): int
+            {
+                return 1;
+            }
+        };
+        $invalidated = $consumer->invalidate(new SessionInvalidation(
+            globalAccount: $projection->globalAccount,
+            product: $projection->product,
+            reason: SessionInvalidationReason::EntitlementRevoked,
+            occurredAt: new DateTimeImmutable('2026-09-04T12:00:00Z'),
+        ));
+
+        $this->assertSame(['product', 'localUserId', 'globalAccount'], array_keys(get_object_vars($projection)));
+        $this->assertSame($projection, $session->account);
+        $this->assertSame(1, $invalidated);
     }
 
     /** @return array{AssertionClaims, FixtureSigningKeyResolver} */
