@@ -34,10 +34,12 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertExactJson([
                 'account_id' => $accountId,
                 'authentication_state' => 'provider_revoked',
+                'replayed' => false,
             ]);
         $this->withToken($lifecycleToken)->postJson($url, $revocation)
             ->assertOk()
-            ->assertJsonPath('authentication_state', 'provider_revoked');
+            ->assertJsonPath('authentication_state', 'provider_revoked')
+            ->assertJsonPath('replayed', true);
 
         $this->assertDatabaseHas('external_identities', [
             'account_id' => $accountId,
@@ -76,7 +78,11 @@ final class ExternalIdentityLifecycleApiTest extends TestCase
             ->assertExactJson([
                 'account_id' => $accountId,
                 'authentication_state' => 'recovered',
+                'replayed' => false,
             ]);
+        $this->withToken($lifecycleToken)->deleteJson($url, $recovery)
+            ->assertOk()
+            ->assertJsonPath('replayed', true);
 
         $this->assertDatabaseHas('external_identity_lifecycle_events', [
             'account_id' => $accountId,

@@ -3,10 +3,10 @@
 namespace App\Accounts;
 
 use App\Models\Account;
-use App\Models\ExternalIdentity;
 use App\Models\ExternalIdentityLifecycleEvent;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
 
 final readonly class ExternalIdentityLifecycle
 {
@@ -16,7 +16,7 @@ final readonly class ExternalIdentityLifecycle
         string $providerSubject,
         string $caller,
         string $reasonCode,
-    ): ExternalIdentity {
+    ): ExternalIdentityLifecycleResult {
         return $this->change(
             $accountId,
             $provider,
@@ -34,7 +34,7 @@ final readonly class ExternalIdentityLifecycle
         string $caller,
         string $reasonCode,
         string $acceptedRecoveryReference,
-    ): ExternalIdentity {
+    ): ExternalIdentityLifecycleResult {
         if ($acceptedRecoveryReference === '') {
             throw new InvalidArgumentException('An accepted recovery reference is required.');
         }
@@ -58,7 +58,7 @@ final readonly class ExternalIdentityLifecycle
         string $caller,
         string $reasonCode,
         ?string $acceptedRecoveryReference = null,
-    ): ExternalIdentity {
+    ): ExternalIdentityLifecycleResult {
         return DB::transaction(function () use (
             $accountId,
             $provider,
@@ -67,7 +67,7 @@ final readonly class ExternalIdentityLifecycle
             $caller,
             $reasonCode,
             $acceptedRecoveryReference,
-        ): ExternalIdentity {
+        ): ExternalIdentityLifecycleResult {
             $account = Account::query()->lockForUpdate()->findOrFail($accountId);
             $identity = $account->externalIdentities()
                 ->where('provider', $provider)
@@ -98,7 +98,13 @@ final readonly class ExternalIdentityLifecycle
                 'occurred_at' => now(),
             ]);
 
-            return $identity->refresh();
+            return new ExternalIdentityLifecycleResult(
+                accountId: $identity->account_id,
+                authenticationState: $to === ExternalIdentityStatus::Revoked
+                    ? AuthenticationLifecycleState::ProviderRevoked
+                    : AuthenticationLifecycleState::Recovered,
+                replayed: $from === $to,
+            );
         }, 3);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Accounts\ExternalIdentityLifecycle;
 use App\Http\Requests\ExternalIdentityLifecycleRequest;
 use Illuminate\Http\JsonResponse;
-use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
 
 final class ExternalIdentityLifecycleController extends Controller
 {
@@ -15,7 +14,7 @@ final class ExternalIdentityLifecycleController extends Controller
         ExternalIdentityLifecycle $lifecycle,
     ): JsonResponse {
         $input = $request->validated();
-        $identity = $lifecycle->revoke(
+        $result = $lifecycle->revoke(
             $account,
             $input['provider'],
             $input['provider_subject'],
@@ -24,8 +23,9 @@ final class ExternalIdentityLifecycleController extends Controller
         );
 
         return response()->json([
-            'account_id' => $identity->account_id,
-            'authentication_state' => AuthenticationLifecycleState::ProviderRevoked->value,
+            'account_id' => $result->accountId,
+            'authentication_state' => $result->authenticationState->value,
+            'replayed' => $result->replayed,
         ]);
     }
 
@@ -35,7 +35,7 @@ final class ExternalIdentityLifecycleController extends Controller
         ExternalIdentityLifecycle $lifecycle,
     ): JsonResponse {
         $input = $request->validated();
-        $identity = $lifecycle->recover(
+        $result = $lifecycle->recover(
             $account,
             $input['provider'],
             $input['provider_subject'],
@@ -45,8 +45,9 @@ final class ExternalIdentityLifecycleController extends Controller
         );
 
         return response()->json([
-            'account_id' => $identity->account_id,
-            'authentication_state' => AuthenticationLifecycleState::Recovered->value,
+            'account_id' => $result->accountId,
+            'authentication_state' => $result->authenticationState->value,
+            'replayed' => $result->replayed,
         ]);
     }
 }
