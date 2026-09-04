@@ -41,6 +41,7 @@ final class AccountResolutionController extends Controller
             'id' => $resolution->accountId,
             'status' => $resolution->status,
             'created' => $resolution->created,
+            'authentication_state' => $resolution->authenticationState->value,
         ]]);
     }
 }

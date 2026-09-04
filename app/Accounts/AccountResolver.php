@@ -9,6 +9,7 @@ use App\Models\ExternalIdentity;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleState;
 
 final readonly class AccountResolver
 {
@@ -30,7 +31,12 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $identity->account_id, 'resolved', $caller);
 
-                return new AccountResolution($identity->account_id, $identity->account->status->value, false);
+                return new AccountResolution(
+                    $identity->account_id,
+                    $identity->account->status->value,
+                    false,
+                    $this->authenticationState($identity),
+                );
             }
 
             $account = Account::query()->create();
@@ -45,12 +51,22 @@ final readonly class AccountResolver
                 $account->delete();
                 $this->audit($verified, $existing->account_id, 'resolved_after_race', $caller);
 
-                return new AccountResolution($existing->account_id, $existing->account->status->value, false);
+                return new AccountResolution(
+                    $existing->account_id,
+                    $existing->account->status->value,
+                    false,
+                    $this->authenticationState($existing),
+                );
             }
 
             $this->audit($verified, $account->id, 'created', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, true);
+            return new AccountResolution(
+                $account->id,
+                $account->status->value,
+                true,
+                AuthenticationLifecycleState::Authenticated,
+            );
         }, 3);
     }
 
@@ -83,13 +99,25 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $accountId, 'link_replayed', $caller);
 
-                return new AccountResolution($account->id, $account->status->value, false);
+                return new AccountResolution(
+                    $account->id,
+                    $account->status->value,
+                    false,
+                    $this->authenticationState($identity),
+                );
             }
 
             $this->createIdentity($account, $verified);
             $this->audit($verified, $accountId, 'linked', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, false);
+            return new AccountResolution(
+                $account->id,
+                $account->status->value,
+                false,
+                $account->status === AccountStatus::Suspended
+                    ? AuthenticationLifecycleState::Suspended
+                    : AuthenticationLifecycleState::Authenticated,
+            );
         }, 3);
     }
 
@@ -145,6 +173,17 @@ final readonly class AccountResolver
             'linked_at' => now(),
             'last_authenticated_at' => $verified->authenticatedAt,
         ]);
+    }
+
+    private function authenticationState(ExternalIdentity $identity): AuthenticationLifecycleState
+    {
+        if ($identity->account->status === AccountStatus::Suspended) {
+            return AuthenticationLifecycleState::Suspended;
+        }
+
+        return $identity->status === ExternalIdentityStatus::Revoked
+            ? AuthenticationLifecycleState::ProviderRevoked
+            : AuthenticationLifecycleState::Authenticated;
     }
 
     private function audit(VerifiedExternal $verified, ?string $accountId, string $outcome, ?string $caller): void

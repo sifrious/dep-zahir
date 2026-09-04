@@ -47,6 +47,19 @@ The response contains `allowed`, `account_id`, `account_status`, `product`, `ent
 
 Lifecycle-authorized callers may suspend with `POST /api/v1/accounts/{account}/suspension` and reactivate with `DELETE` on the same path. Both require a reason and create a distinct lifecycle audit event. Ordinary product callers receive HTTP 403. No caller receives storage handles or mutates Zahir tables directly.
 
+Lifecycle-authorized callers may also record an external connection revocation
+with `POST /api/v1/accounts/{account}/identities/revocation` and accept provider-
+verified recovery with `DELETE` on the same path. Both identify the connection
+only by `(provider, provider_subject)` and require a reason code. Recovery also
+requires an opaque accepted recovery reference; audit provenance stores its
+hash, not the reference. Resolution of a revoked connection returns the same
+account with `authentication_state: provider_revoked`, never a new account.
+
+The provider owns recovery and verification. Zahir records only the
+provider-neutral lifecycle result. Products own local logout and session expiry,
+and use the package lifecycle transition contract to invalidate local sessions
+and select the next action.
+
 ## Service authentication
 
 The internal contract uses caller-specific, hash-only bearer credentials. The authenticated caller and credential are attached to audit events. Account-lifecycle authority is a separate caller capability and defaults off. A future workload-identity decision may replace this without changing domain contracts.
