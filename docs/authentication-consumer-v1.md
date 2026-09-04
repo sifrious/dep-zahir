@@ -95,7 +95,7 @@ product.
 3. Require an allowed algorithm; never honor an assertion-selected algorithm.
 4. Resolve `kid` from the configured issuer key cache.
 5. On an unknown `kid`, refresh that issuer's keys once and resolve again.
-6. Reject an still-unknown key, then verify the signature.
+6. Reject a still-unknown key, then verify the signature.
 7. Validate audience, expiry, issue time, and nonce.
 8. Atomically record `jti` as consumed before creating the local session.
 

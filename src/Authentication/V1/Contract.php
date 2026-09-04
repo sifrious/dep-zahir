@@ -192,7 +192,7 @@ final readonly class AssertionClaims
      * The subject is always the opaque Zahir global account ID. External provider
      * subjects are represented separately by ExternalProviderConnection.
      *
-     * @param list<string> $audiences
+     * @param  list<string>  $audiences
      */
     public function __construct(
         public string $issuer,
@@ -268,8 +268,8 @@ interface SignatureVerifier
 final readonly class AssertionValidationPolicy
 {
     /**
-     * @param list<string> $allowedIssuers
-     * @param list<string> $allowedAlgorithms
+     * @param  list<string>  $allowedIssuers
+     * @param  list<string>  $allowedAlgorithms
      */
     public function __construct(
         public array $allowedIssuers,
