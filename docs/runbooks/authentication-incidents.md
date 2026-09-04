@@ -10,11 +10,11 @@ Logres protected actions fail closed with HTTP 503; no local role or onboarding 
 
 ## Credential or identity compromise
 
-Revoke the affected service credential immediately; disable its caller if scope is uncertain. For provider-user compromise, rely on the provider's credential/session recovery and suspend the Zahir account through a lifecycle-authorized caller when necessary. Review resolution, lifecycle, entitlement, and service-request audits by bounded time range. Do not search logs using raw provider subjects or email.
+Revoke the affected service credential immediately; disable its caller if scope is uncertain. For provider-user compromise, rely on the provider's credential/session recovery, record the external connection as `provider_revoked`, and suspend the Zahir account through a lifecycle-authorized caller when necessary. Provider revocation invalidates matching product-local sessions and directs the user to provider recovery; it must not be classified as a retryable Zahir outage. Review resolution, lifecycle, entitlement, and service-request audits by bounded time range. Do not search logs using raw provider subjects or email.
 
 ## Suspension and recovery
 
-Suspension denies entitlement even if a product session or local role remains. Reactivation requires lifecycle authority and a reason. Removing the last identity requires an accepted recovery reference and lifecycle authority. Preserve the external case reference in the audit without copying recovery secrets.
+Suspension denies entitlement even if a product session or local role remains. Reactivation requires lifecycle authority and a reason. Removing the last identity or accepting provider-verified recovery requires an accepted recovery reference and lifecycle authority. Preserve only the reference hash in lifecycle audit; never copy recovery secrets. A `recovered` result does not itself create a product session: require fresh authentication, and verify that retry resolves the same opaque account.
 
 ## Rollback
 
