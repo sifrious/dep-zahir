@@ -3,9 +3,9 @@
 use App\Http\Controllers\AccountLifecycleController;
 use App\Http\Controllers\AccountResolutionController;
 use App\Http\Controllers\EntitlementDecisionController;
+use App\Http\Controllers\ExternalIdentityLifecycleController;
 use App\Http\Controllers\IdentityLinkController;
 use App\Http\Controllers\IdentityUnlinkController;
-use App\Http\Controllers\ExternalIdentityLifecycleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/status', fn () => response()->json(['service' => 'zahir', 'status' => 'ready']));

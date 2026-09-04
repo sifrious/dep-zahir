@@ -122,7 +122,7 @@ final readonly class AuthenticationLifecycle
     }
 
     /**
-     * @param list<AuthenticationLifecycleState> $allowed
+     * @param  list<AuthenticationLifecycleState>  $allowed
      */
     private function from(
         AuthenticationLifecycleState $from,
