@@ -42,6 +42,7 @@ enum FailureCode: string
     case DisallowedAlgorithm = 'disallowed_algorithm';
     case InvalidSignature = 'invalid_signature';
     case MalformedAssertion = 'malformed_assertion';
+    case AssertionLifetimeExceeded = 'assertion_lifetime_exceeded';
     case ReplayedAssertion = 'replayed_assertion';
     case ProviderFailed = 'provider_failed';
     case ZahirUnavailable = 'zahir_unavailable';
@@ -367,6 +368,7 @@ final readonly class AssertionValidationPolicy
         public DateTimeImmutable $now,
         public array $allowedAlgorithms = ['RS256'],
         public int $clockToleranceSeconds = 60,
+        public int $maxAssertionLifetimeSeconds = 600,
     ) {
         if ($allowedIssuers === [] || $expectedAudience === '' || $expectedNonce === '') {
             throw new InvalidArgumentException('Issuer allowlist, audience, and nonce are required.');
@@ -374,6 +376,10 @@ final readonly class AssertionValidationPolicy
 
         if ($clockToleranceSeconds < 0 || $clockToleranceSeconds > 300) {
             throw new InvalidArgumentException('Clock tolerance must be between zero and 300 seconds.');
+        }
+
+        if ($maxAssertionLifetimeSeconds <= 0) {
+            throw new InvalidArgumentException('Maximum assertion lifetime must be positive.');
         }
     }
 }
@@ -443,8 +449,11 @@ final readonly class AuthenticationCallback
 {
     public function __construct(public string $state, public ?string $code, public ?string $error = null)
     {
-        if ($state === '' || ($code === null && $error === null)) {
-            throw new InvalidArgumentException('Callback state and either code or error are required.');
+        $hasCode = $code !== null && $code !== '';
+        $hasError = $error !== null && $error !== '';
+
+        if ($state === '' || $hasCode === $hasError) {
+            throw new InvalidArgumentException('Callback state and exactly one non-empty code or error are required.');
         }
     }
 }

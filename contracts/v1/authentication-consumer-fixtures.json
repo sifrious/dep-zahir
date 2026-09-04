@@ -6,7 +6,8 @@
     "expected_audience": "burdgeon-fixture",
     "expected_nonce": "nonce-fixture",
     "now": "2026-09-04T12:00:00Z",
-    "clock_tolerance_seconds": 60
+    "clock_tolerance_seconds": 60,
+    "max_assertion_lifetime_seconds": 600
   },
   "cases": {
     "successful_login": {
@@ -41,6 +42,14 @@
         "expires_at": "2026-09-04T11:58:59Z"
       },
       "expected": {"failure": "expired_token"}
+    },
+    "assertion_lifetime_exceeded": {
+      "from": "successful_login",
+      "override": {
+        "issued_at": "2026-09-04T11:00:00Z",
+        "expires_at": "2026-09-04T12:01:00Z"
+      },
+      "expected": {"failure": "assertion_lifetime_exceeded"}
     },
     "nonce_mismatch": {
       "from": "successful_login",
