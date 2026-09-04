@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Sifrious\Zahir\Authentication\V1\AssertionClaims;
@@ -12,6 +13,7 @@ use Sifrious\Zahir\Authentication\V1\AssertionDecoder;
 use Sifrious\Zahir\Authentication\V1\AssertionValidationPolicy;
 use Sifrious\Zahir\Authentication\V1\AssertionValidator;
 use Sifrious\Zahir\Authentication\V1\AuthenticatedLogin;
+use Sifrious\Zahir\Authentication\V1\AuthenticationCallback;
 use Sifrious\Zahir\Authentication\V1\AuthenticationFailure;
 use Sifrious\Zahir\Authentication\V1\DecodedAssertion;
 use Sifrious\Zahir\Authentication\V1\ExecutionAuthorization;
@@ -64,8 +66,31 @@ final class AuthenticationConsumerContractTest extends TestCase
         yield 'wrong audience' => ['wrong_audience', FailureCode::WrongAudience];
         yield 'unknown issuer' => ['unknown_issuer', FailureCode::UnknownIssuer];
         yield 'expired token' => ['expired_token', FailureCode::ExpiredToken];
+        yield 'excessive assertion lifetime' => [
+            'assertion_lifetime_exceeded',
+            FailureCode::AssertionLifetimeExceeded,
+        ];
         yield 'nonce mismatch' => ['nonce_mismatch', FailureCode::NonceMismatch];
         yield 'unknown signing key' => ['unknown_signing_key', FailureCode::UnknownSigningKey];
+    }
+
+    #[DataProvider('invalidCallbackCases')]
+    public function test_callback_requires_exactly_one_non_empty_code_or_error(
+        ?string $code,
+        ?string $error,
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+
+        new AuthenticationCallback('state-fixture', $code, $error);
+    }
+
+    /** @return iterable<string, array{?string, ?string}> */
+    public static function invalidCallbackCases(): iterable
+    {
+        yield 'neither' => [null, null];
+        yield 'empty code' => ['', null];
+        yield 'empty error' => [null, ''];
+        yield 'mixed' => ['code-fixture', 'access_denied'];
     }
 
     public function test_unknown_key_refresh_supports_rotation_once(): void
@@ -219,6 +244,7 @@ final class AuthenticationConsumerContractTest extends TestCase
             expectedNonce: $configuration['expected_nonce'],
             now: new DateTimeImmutable($configuration['now']),
             clockToleranceSeconds: $configuration['clock_tolerance_seconds'],
+            maxAssertionLifetimeSeconds: $configuration['max_assertion_lifetime_seconds'],
         ));
 
         return [$claims, $resolver];

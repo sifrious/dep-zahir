@@ -9,6 +9,8 @@ use App\Models\ExternalIdentity;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Sifrious\Zahir\Authentication\V1\AuthenticationLifecycleSignal;
+use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
 
 final readonly class AccountResolver
 {
@@ -30,7 +32,13 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $identity->account_id, 'resolved', $caller);
 
-                return new AccountResolution($identity->account_id, $identity->account->status->value, false);
+                return new AccountResolution(
+                    $identity->account_id,
+                    $identity->account->status->value,
+                    false,
+                    $this->authenticationOutcome($identity),
+                    $this->authenticationReason($identity),
+                );
             }
 
             $account = Account::query()->create();
@@ -45,12 +53,23 @@ final readonly class AccountResolver
                 $account->delete();
                 $this->audit($verified, $existing->account_id, 'resolved_after_race', $caller);
 
-                return new AccountResolution($existing->account_id, $existing->account->status->value, false);
+                return new AccountResolution(
+                    $existing->account_id,
+                    $existing->account->status->value,
+                    false,
+                    $this->authenticationOutcome($existing),
+                    $this->authenticationReason($existing),
+                );
             }
 
             $this->audit($verified, $account->id, 'created', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, true);
+            return new AccountResolution(
+                $account->id,
+                $account->status->value,
+                true,
+                LoginOutcomeType::Authenticated,
+            );
         }, 3);
     }
 
@@ -83,13 +102,26 @@ final readonly class AccountResolver
                 ]);
                 $this->audit($verified, $accountId, 'link_replayed', $caller);
 
-                return new AccountResolution($account->id, $account->status->value, false);
+                return new AccountResolution(
+                    $account->id,
+                    $account->status->value,
+                    false,
+                    $this->authenticationOutcome($identity),
+                    $this->authenticationReason($identity),
+                );
             }
 
             $this->createIdentity($account, $verified);
             $this->audit($verified, $accountId, 'linked', $caller);
 
-            return new AccountResolution($account->id, $account->status->value, false);
+            return new AccountResolution(
+                $account->id,
+                $account->status->value,
+                false,
+                $account->status === AccountStatus::Suspended
+                    ? LoginOutcomeType::Suspended
+                    : LoginOutcomeType::Authenticated,
+            );
         }, 3);
     }
 
@@ -145,6 +177,25 @@ final readonly class AccountResolver
             'linked_at' => now(),
             'last_authenticated_at' => $verified->authenticatedAt,
         ]);
+    }
+
+    private function authenticationOutcome(ExternalIdentity $identity): LoginOutcomeType
+    {
+        if ($identity->account->status === AccountStatus::Suspended) {
+            return LoginOutcomeType::Suspended;
+        }
+
+        return $identity->status === ExternalIdentityStatus::Revoked
+            ? LoginOutcomeType::ProviderFailed
+            : LoginOutcomeType::Authenticated;
+    }
+
+    private function authenticationReason(ExternalIdentity $identity): ?string
+    {
+        return $identity->account->status === AccountStatus::Active
+            && $identity->status === ExternalIdentityStatus::Revoked
+            ? AuthenticationLifecycleSignal::ProviderRevoked->value
+            : null;
     }
 
     private function audit(VerifiedExternal $verified, ?string $accountId, string $outcome, ?string $caller): void

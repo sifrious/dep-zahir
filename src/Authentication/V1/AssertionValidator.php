@@ -65,6 +65,12 @@ final readonly class AssertionValidator
             throw new AuthenticationFailure(FailureCode::TokenNotYetValid);
         }
 
+        $assertionLifetime = $decoded->claims->expiresAt->getTimestamp()
+            - $decoded->claims->issuedAt->getTimestamp();
+        if ($assertionLifetime > $policy->maxAssertionLifetimeSeconds) {
+            throw new AuthenticationFailure(FailureCode::AssertionLifetimeExceeded);
+        }
+
         if (! hash_equals($policy->expectedNonce, $decoded->claims->nonce)) {
             throw new AuthenticationFailure(FailureCode::NonceMismatch);
         }

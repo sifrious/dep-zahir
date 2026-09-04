@@ -1,0 +1,54 @@
+{
+  "version": "v1",
+  "cases": {
+    "local_logout": {
+      "signal": "local_logout",
+      "expected": {
+        "login_outcome": null,
+        "session_invalidation_reason": "logout"
+      }
+    },
+    "session_expired": {
+      "signal": "session_expired",
+      "expected": {
+        "login_outcome": "expired",
+        "session_invalidation_reason": "session_expired"
+      }
+    },
+    "account_suspended": {
+      "signal": "account_suspended",
+      "expected": {
+        "login_outcome": "suspended",
+        "session_invalidation_reason": "account_suspended"
+      }
+    },
+    "provider_revoked": {
+      "signal": "provider_revoked",
+      "expected": {
+        "login_outcome": "provider_failed",
+        "session_invalidation_reason": "provider_revoked"
+      }
+    },
+    "entitlement_revoked": {
+      "signal": "entitlement_revoked",
+      "expected": {
+        "login_outcome": "unauthorized_product",
+        "session_invalidation_reason": "entitlement_revoked"
+      }
+    },
+    "recovery_accepted": {
+      "signal": "recovery_accepted",
+      "expected": {
+        "login_outcome": null,
+        "session_invalidation_reason": null
+      }
+    },
+    "zahir_unavailable": {
+      "signal": "zahir_unavailable",
+      "expected": {
+        "login_outcome": "zahir_unavailable",
+        "session_invalidation_reason": null
+      }
+    }
+  }
+}

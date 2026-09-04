@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountLifecycleController;
 use App\Http\Controllers\AccountResolutionController;
 use App\Http\Controllers\EntitlementDecisionController;
+use App\Http\Controllers\ExternalIdentityLifecycleController;
 use App\Http\Controllers\IdentityLinkController;
 use App\Http\Controllers\IdentityUnlinkController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,8 @@ Route::middleware(['zahir.request-size', 'throttle:zahir', 'zahir.service'])->pr
     Route::post('/accounts/resolve', AccountResolutionController::class);
     Route::post('/accounts/{account}/identities/link', IdentityLinkController::class);
     Route::delete('/accounts/{account}/identities', IdentityUnlinkController::class);
+    Route::post('/accounts/{account}/identities/revocation', [ExternalIdentityLifecycleController::class, 'revoke']);
+    Route::delete('/accounts/{account}/identities/revocation', [ExternalIdentityLifecycleController::class, 'recover']);
     Route::post('/accounts/{account}/suspension', [AccountLifecycleController::class, 'suspend']);
     Route::delete('/accounts/{account}/suspension', [AccountLifecycleController::class, 'reactivate']);
     Route::post('/entitlements/decide', EntitlementDecisionController::class);

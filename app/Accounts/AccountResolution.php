@@ -2,11 +2,15 @@
 
 namespace App\Accounts;
 
+use Sifrious\Zahir\Authentication\V1\LoginOutcomeType;
+
 final readonly class AccountResolution
 {
     public function __construct(
         public string $accountId,
         public string $status,
         public bool $created,
+        public LoginOutcomeType $authenticationOutcome,
+        public ?string $authenticationReason = null,
     ) {}
 }
