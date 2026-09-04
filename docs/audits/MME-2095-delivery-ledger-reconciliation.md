@@ -1,7 +1,9 @@
 # MME-2095 — Zahir delivery-ledger reconciliation
 
-Audit timestamp: 2026-09-04 13:00 UTC  
-Repository baseline: [`sifrious/dep-zahir@2e44d08`](https://github.com/sifrious/dep-zahir/commit/2e44d08645103302f10734356f302be3c2f9c99b)  
+Audit timestamp: 2026-09-04 13:15 UTC
+
+Repository baseline: [`sifrious/dep-zahir@2e44d08`](https://github.com/sifrious/dep-zahir/commit/2e44d08645103302f10734356f302be3c2f9c99b)
+
 Linear source: [MME-2095](https://linear.app/sifirous/issue/MME-2095/audit-reconcile-linear-status-aliases-and-the-zahir-repository)
 
 ## Audit constraints and conclusion
@@ -81,7 +83,7 @@ The client has tags [`v0.0.1`](https://github.com/sifrious/dep-accounts-client/r
 
 | Ticket | Evidence | Audit disposition |
 |---|---|---|
-| [MME-1823](https://linear.app/sifirous/issue/MME-1823/publish-the-reusable-product-authentication-consumer-contract) | Ready-for-review [`dep-zahir#3`](https://github.com/sifrious/dep-zahir/pull/3), head `bdcc0b0`; 36 tests/126 assertions reported; CodeRabbit passed; CI was still running at audit time | Implemented, reviewable, not merged. Do not treat blockers on MME-1823 as cleared until merge and successful CI. |
+| [MME-1823](https://linear.app/sifirous/issue/MME-1823/publish-the-reusable-product-authentication-consumer-contract) | Ready-for-review [`dep-zahir#3`](https://github.com/sifrious/dep-zahir/pull/3), head `5c6a480`; 36 tests/126 assertions reported for the earlier revision; CI and CodeRabbit were still running on the current head at audit time | Implemented, reviewable, not merged. Do not treat blockers on MME-1823 as cleared until merge and successful CI. |
 | [MME-2102](https://linear.app/sifirous/issue/MME-2102/define-provision-and-govern-the-burdgen-product-entitlement-for-shared) | Remote branch `mmebyte/mme-2102-define-provision-and-govern-the-burdgen-product-entitlement`, seven commits `08f7c4c..20a9704`, including `958015f` “Define and provision the Burdgen product entitlement”; 28 files, +1196/-50 versus main | Substantial implementation exists, but no GitHub PR or branch CI evidence was found. The branch also contains lifecycle, email/notification, and other product entitlement work beyond MME-2102; it needs scope review before merge. |
 
 Open Dependabot PRs [`#1`](https://github.com/sifrious/dep-zahir/pull/1) and [`#2`](https://github.com/sifrious/dep-zahir/pull/2) are maintenance updates and are not delivery evidence for MME-2095.
